@@ -61,14 +61,12 @@ app.on('open-url', function (ev, url) {
 
 app.on('ready', async () => {
     electron.powerMonitor.on('lock-screen', () => {
-        console.log('The system is going to lock-screen');
         if(win){
             win.webContents.send('screen-lock-change', 'lock');
         }
     });
 
     electron.powerMonitor.on('unlock-screen', () => {
-        console.log('The system is going to unlock-screen');
         if(win){
             win.webContents.send('screen-lock-change', 'unlock');
         }
