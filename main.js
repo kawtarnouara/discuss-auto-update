@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer } = require('electron');
-
+const electron = require('electron');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
@@ -56,6 +56,18 @@ app.on('open-url', function (ev, url) {
 });
 
 app.on('ready', async () => {
+    electron.powerMonitor.on('lock-screen', () => {
+        if(win){
+            win.webContents.send('screen-lock-change', 'lock');
+        }
+    });
+
+    electron.powerMonitor.on('unlock-screen', () => {
+        if(win){
+            win.webContents.send('screen-lock-change', 'unlock');
+        }
+    });
+
     i18n.on('loaded', (loaded) => {
         const lang = app.getLocale().startsWith('en') ? 'en' : app.getLocale().startsWith('fr') ? 'fr' : app.getLocale().startsWith('es') ? 'es' : 'fr'
         i18n.changeLanguage(lang);
