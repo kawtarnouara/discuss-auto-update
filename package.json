@@ -1,7 +1,7 @@
 {
   "name": "discuss",
   "description": "Piman Discuss, La solution de communication privee, dediee, sur mesure et chiffree",
-  "version": "5.4.7",
+  "version": "5.7.8",
   "main": "./main.js",
   "author": "PRIVATE DISCUSS",
   "scripts": {
