@@ -24,7 +24,7 @@ module.exports = async function (params) {
             appBundleId: appId,
             appPath: appPath,
             appleId: "kawtar.nouara@gmail.com",
-            appleIdPassword: "jrsn-ihch-zpqe-bgpw"
+            appleIdPassword: "wduy-nmmn-ghqd-ajku"
         });
     } catch (error) {
         console.error(error);
