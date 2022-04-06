@@ -215,24 +215,31 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
     showNoUpdatesDialog = showNoUpdates;
     const { net } = require('electron')
     var body = JSON.stringify({ platform: 'desktop', os: 'windows'});
+    let finalResponse = '';
     const request = net.request({
         method: 'POST',
         url: 'https://api-piman.private-discuss.com/v1.0/release/get' ,
         protocol: 'https:',
     });
     request.on('response', (response) => {
-        console.log(`STATUS: ${response.statusCode} ${response.toString()}`);
+        console.log(`STATUS: ${response.statusCode} ${JSON.stringify(response)}`);
         console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
 
         response.on('data', (chunk) => {
             try{
-                console.log(`BODY: ${JSON.stringify(JSON.parse(chunk.toString()))}`)
-                backendData = JSON.parse(chunk.toString()).result.data;
+                if (chunk){
+                    finalResponse += chunk.toString()
+
+                }
             } catch(e){
 
             }
-
         });
+        response.on('end', () => {
+            const parsed = JSON.parse(finalResponse);
+            backendData = parsed.result.data;
+            console.log(`BODY: ${backendData}`)
+        })
         response.on('error', (error) => {
             console.log('error :' + JSON.stringify(error))
         });
