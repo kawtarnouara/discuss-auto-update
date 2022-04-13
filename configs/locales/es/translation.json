@@ -13,5 +13,7 @@
   "paste": "Pegar",
   "selectAll": "Seleccionar todo",
   "window": "Ventana",
-  "reload": "Recargar"
+  "reload": "Recargar",
+  "warning": "Advertencia",
+  "downloading": "Se está descargando un archivo. ¿Está seguro de que desea detener la descarga y salir?"
 }

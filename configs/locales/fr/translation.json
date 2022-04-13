@@ -13,5 +13,7 @@
   "paste": "Coller",
   "selectAll": "Tout sélectionner",
   "window": "Fenêtre",
-  "reload": "Recharger"
+  "reload": "Recharger",
+  "warning": "Attention",
+   "downloading": "Un fichier est en cours de téléchargement. Voulez-vous vraiment arrêter le téléchargement et quitter ?"
 }
