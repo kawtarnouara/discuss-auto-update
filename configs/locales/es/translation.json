@@ -14,7 +14,6 @@
   "selectAll": "Seleccionar todo",
   "window": "Ventana",
   "reload": "Recargar",
-  "no_updates": "está actualizado",
-  "download": "Descargue la última versión desde la configuración",
-  "current_version": "versión actual"
+  "warning": "Advertencia",
+  "downloading": "Se está descargando un archivo. ¿Está seguro de que desea detener la descarga y salir?"
 }

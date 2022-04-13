@@ -14,7 +14,6 @@
   "selectAll": "Select all",
   "window": "Window",
   "reload": "Reload",
-  "no_updates": "is up to date",
-  "download": "Please download the last release from Settings",
-  "current_version": "Current version"
+  "warning": "warning",
+  "downloading": "A file is being downloaded. Are you sure you want to stop downloading and exit?"
 }

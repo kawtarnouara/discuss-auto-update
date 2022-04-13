@@ -14,7 +14,6 @@
   "selectAll": "Tout sélectionner",
   "window": "Fenêtre",
   "reload": "Recharger",
-  "no_updates": "est à jour",
- "download": "Veuillez télécharger la dernière version en vous rendant sur Paramètres",
- "current_version": "Version actuelle"
+  "warning": "Attention",
+   "downloading": "Un fichier est en cours de téléchargement. Voulez-vous vraiment arrêter le téléchargement et quitter ?"
 }
