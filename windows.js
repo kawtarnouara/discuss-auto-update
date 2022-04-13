@@ -115,16 +115,13 @@ exports.createWindow =  function(i18n, dev = true) {
         event.preventDefault();
     });
 
-    win.on('close', function (event) {
-           app.quit();
-    });
 
     const templateFull = getMenuAfterAuth(win, i18n);
 
     const templateNotFull = getMenuBeforeAuth(win, i18n);
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
-    downloadManager();
+    downloadManager(win, i18n);
 
     return {win: win, splash: splash}
 };

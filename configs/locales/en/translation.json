@@ -13,5 +13,7 @@
   "paste": "Paste",
   "selectAll": "Select all",
   "window": "Window",
-  "reload": "Reload"
+  "reload": "Reload",
+  "warning": "warning",
+  "downloading": "A file is being downloaded. Are you sure you want to stop downloading and exit?"
 }
