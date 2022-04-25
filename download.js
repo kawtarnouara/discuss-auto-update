@@ -39,6 +39,7 @@ exports.downloadManager = function (win, i18n) {
         "use strict";
         // console.log(app.getPath('downloads'), downloadItem.getURL(), downloadItem.getFilename(), downloadItem.getMimeType());
         // .replace : to trim all "/" characters from downloads path
+        progressBar = null;
         const separator = process.platform === 'darwin' ? '/' :'\\';
         let downloadPath = (process.platform === 'darwin' ? '/' : '') + app.getPath('downloads').replace(/^\/+|\/+$/g, '') + separator + downloadItem.getFilename();
         const fs = require('fs');
