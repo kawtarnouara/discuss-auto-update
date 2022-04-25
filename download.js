@@ -37,12 +37,11 @@ exports.downloadManager = function (win, i18n) {
     });
     session.defaultSession.on('will-download', function(event, downloadItem, webContents){
         "use strict";
-        // console.log(app.getPath('downloads'), downloadItem.getURL(), downloadItem.getFilename(), downloadItem.getMimeType());
         // .replace : to trim all "/" characters from downloads path
+        progressBar = null;
         const separator = process.platform === 'darwin' ? '/' :'\\';
         let downloadPath = (process.platform === 'darwin' ? '/' : '') + app.getPath('downloads').replace(/^\/+|\/+$/g, '') + separator + downloadItem.getFilename();
         const fs = require('fs');
-        console.log('download')
         const downloadFolder = (process.platform === 'darwin' ? '/' : '')  + app.getPath('downloads').replace(/^\/+|\/+$/g, '') + separator;
         let downloadFileName = downloadItem.getFilename();
         let downloadFilePath;
@@ -65,31 +64,27 @@ exports.downloadManager = function (win, i18n) {
         } catch(err) {
             downloadFilePath = downloadFolder + downloadFileName;
         }
-        console.log('download path : ' + downloadPath + ' - file exists : ' + fs.existsSync(downloadFilePath));
         downloadItem.setSavePath(downloadFilePath);
 
         // var util = require('util');
-        // console.log("dowloader is called with event", util.inspect(downloadItem));
         var totalByte = downloadItem.getTotalBytes();
         var totalMByte = parseFloat((totalByte / 1000000).toFixed(2));
-        // console.log('File Size', totalMByte+' MB');
         downloadItem.on('updated', function (event, state) {
             "use strict";
-            // console.log("download item event triggred with state : "+ state, event.sender.getContentDisposition());
+             console.log("STATE : "+ state);
             let receviedBytes = downloadItem.getReceivedBytes();
             let receviedMBytes = parseFloat((receviedBytes / 1000000).toFixed(2));
-            console.log("received bytes : "+ receviedBytes);
             if (state === 'interrupted') {
                 isDownloading = false;
-                // console.log('Download is interrupted');
                 setTimeout(function () {
                     // progressBar.close();
                 }, 5000);
             } else if (state === 'progressing') {
                 if (totalByte> 0 && receviedBytes > 0) {
                     // Download progressing + started
-                    // console.log("download is processing with size : "+receviedMBytes+" MB");
+                    console.log('progress bar ' , progressBar)
                     if (progressBar === null) {
+
                         progressBar = new ProgressBar({
                             indeterminate: false,
                             title: 'Téléchargement - Piman Discuss',
@@ -115,7 +110,6 @@ exports.downloadManager = function (win, i18n) {
                     if (progressBar && progressBar.value !== 100) {
                         progressBar.value = (receviedBytes / totalByte) * 100;
                     }
-                    console.log('progressBar detail updated');
                     if (progressBar){
                         progressBar.detail = `Téléchargé ${receviedMBytes} MB sur ${totalMByte} MB ...`;
                     }
@@ -125,7 +119,6 @@ exports.downloadManager = function (win, i18n) {
 
         downloadItem.once('done', function(event, state) {
             isDownloading = false;
-            console.log("INSIDE DONE with state : " + state);
             if (state === 'completed') {
                 if (progressBar) {
                     let path = downloadItem.getSavePath();
