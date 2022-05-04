@@ -71,18 +71,13 @@ exports.downloadManager = function (win, i18n) {
         var totalMByte = parseFloat((totalByte / 1000000).toFixed(2));
         downloadItem.on('updated', function (event, state) {
             "use strict";
-             console.log("STATE : "+ state);
             let receviedBytes = downloadItem.getReceivedBytes();
             let receviedMBytes = parseFloat((receviedBytes / 1000000).toFixed(2));
             if (state === 'interrupted') {
                 isDownloading = false;
-                setTimeout(function () {
-                    // progressBar.close();
-                }, 5000);
             } else if (state === 'progressing') {
                 if (totalByte> 0 && receviedBytes > 0) {
                     // Download progressing + started
-                    console.log('progress bar ' , progressBar)
                     if (progressBar === null) {
 
                         progressBar = new ProgressBar({
@@ -95,8 +90,8 @@ exports.downloadManager = function (win, i18n) {
                                 parent: null,
                                 modal: true,
                                 resizable: false,
-                                closable: false,
-                                minimizable: false,
+                                closable: true,
+                                minimizable: true,
                                 maximizable: false,
                                 width: 500,
                                 height: 170,
@@ -106,6 +101,15 @@ exports.downloadManager = function (win, i18n) {
                                 }
                             }
                         });
+                        progressBar.on('aborted', () => {
+                            if (progressBar){
+                                win.setProgressBar(-1);
+                                progressBar.setCompleted();
+                                progressBar.close();
+                                progressBar = null;
+                            }
+                            downloadItem.cancel();
+                        })
                     }
                     if (progressBar && progressBar.value !== 100) {
                         progressBar.value = (receviedBytes / totalByte) * 100;
