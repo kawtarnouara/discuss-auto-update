@@ -81,6 +81,32 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL, event, options, dev);
                }
             })
+        } else if(url.startsWith('https://office-piman.private-discuss.com')){
+            event.preventDefault();
+            Object.assign(options, {
+                title: "Piman Discuss",
+                modal: false,
+                // parent: win,
+                width: 1300,
+                height: 800,
+                minWidth: 500,
+                minHeight: 500,
+                webContents: "", // use existing webContents if provided
+                show: false
+            })
+
+            let new_win = new BrowserWindow(options)
+            remoteMain.enable(new_win.webContents);
+            new_win.once('ready-to-show', () => {
+                new_win.show()
+                if (dev) {
+                    new_win.webContents.openDevTools();
+                }
+            })
+            // if (!options.webContents) {
+            new_win.loadURL(url) // existing webContents will be navigated automatically
+            // }
+            event.newGuest = new_win
         } else {
             event.preventDefault();
             shell.openExternal(url);
