@@ -95,9 +95,35 @@ app.on('ready', async () => {
     }
     win = result.win;
     remoteMain.enable(win.webContents);
-    win.webContents.on('did-finish-load', () => {
+    win.webContents.on('did-finish-load', (event) => {
         if (mainurl) {
-            win.webContents.send('redirect-to-url', mainurl);
+            event.preventDefault();
+           let options = {
+                title: "Piman Discuss",
+                modal: false,
+                // parent: win,
+                width: 1300,
+                height: 800,
+                minWidth: 500,
+                minHeight: 500,
+                webContents: "", // use existing webContents if provided
+                show: false
+            }
+            let new_win = new BrowserWindow(options)
+            remoteMain.enable(new_win.webContents);
+            new_win.once('ready-to-show', () => {
+               // new_win.webContents.send('redirect-to-url', mainurl);
+                new_win.show()
+                if (dev) {
+                    new_win.webContents.openDevTools();
+                }
+            })
+            // if (!options.webContents) {
+            new_win.loadURL(mainurl) // existing webContents will be navigated automatically
+            // }
+            event.newGuest = new_win
+           // win.webContents.send('redirect-to-url', mainurl);
+            //mainurl = args.slice(1)[2];
             mainurl = null;
         }
     });
