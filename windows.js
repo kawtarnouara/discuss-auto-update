@@ -81,7 +81,7 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL, event, options, dev);
                }
             })
-        } else if(url.startsWith('https://office-piman.private-discuss.com')){
+        } else if(url.startsWith('https://office-piman.private-discuss.com') || url.includes('/pdf/')){
             event.preventDefault();
             Object.assign(options, {
                 title: "Piman Discuss",
@@ -91,6 +91,11 @@ exports.createWindow =  function(i18n, dev = true) {
                 height: 800,
                 minWidth: 500,
                 minHeight: 500,
+                webPreferences: {
+                    nodeIntegration: true,
+                    enableRemoteModule: true,
+                    contextIsolation: false,
+                  },
                 webContents: "", // use existing webContents if provided
                 show: false
             })
