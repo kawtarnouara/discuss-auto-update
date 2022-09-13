@@ -81,7 +81,7 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL, event, options, dev);
                }
             })
-        } else if(url.startsWith('https://office-piman.private-discuss.com') || url.includes('/pdf/')){
+        } else if(url.startsWith('https://office-piman.private-discuss.com')){
             event.preventDefault();
             Object.assign(options, {
                 title: "Piman Discuss",
@@ -91,12 +91,7 @@ exports.createWindow =  function(i18n, dev = true) {
                 height: 800,
                 minWidth: 500,
                 minHeight: 500,
-                webPreferences: {
-                    nodeIntegration: true,
-                    enableRemoteModule: true,
-                    contextIsolation: false,
-                  },
-                webContents: "", // use existing webContents if provided
+                webContents: '',
                 show: false
             })
 
@@ -112,7 +107,13 @@ exports.createWindow =  function(i18n, dev = true) {
             new_win.loadURL(url) // existing webContents will be navigated automatically
             // }
             event.newGuest = new_win
-        } else {
+        } else if (url.includes('/pdf/')){
+            event.preventDefault();
+            let subUrl = url.substr(url.indexOf("/pdf/"));
+            const new_win = openNewWindow(subUrl, event, options, dev);
+            remoteMain.enable(new_win.webContents);
+        }
+        else {
             event.preventDefault();
             shell.openExternal(url);
         }

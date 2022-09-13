@@ -9,3 +9,5 @@ build/dist/*
 app/*
 
 config.js
+
+.history
