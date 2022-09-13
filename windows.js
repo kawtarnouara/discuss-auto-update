@@ -110,7 +110,7 @@ exports.createWindow =  function(i18n, dev = true) {
         } else if (url.includes('/pdf/')){
             event.preventDefault();
             let subUrl = url.substr(url.indexOf("/pdf/"));
-            const new_win = openNewWindow(subUrl, event, options, dev);
+            const new_win = openNewWindow(subUrl, event, options, dev, true);
             remoteMain.enable(new_win.webContents);
         }
         else {
@@ -162,7 +162,7 @@ exports.createWindow =  function(i18n, dev = true) {
     return {win: win, splash: splash}
 };
 
-function openNewWindow(subURL, event, options, dev){
+function openNewWindow(subURL, event, options, dev, openBeforeReady = false){
     let finalPath = urlM.format({
         pathname: path.join(__dirname, '/dist/index.html'),
         protocol: 'file:',
@@ -195,12 +195,18 @@ function openNewWindow(subURL, event, options, dev){
 
     let new_win = new BrowserWindow(options)
     remoteMain.enable(new_win.webContents);
-    new_win.once('ready-to-show', () => {
+    if(openBeforeReady){
         new_win.show()
+    }
+    new_win.once('ready-to-show', () => {
+        if(!openBeforeReady){
+            new_win.show()
+        }
         if (dev) {
             new_win.webContents.openDevTools();
         }
     })
+   
     // if (!options.webContents) {
     new_win.loadURL(finalPath) // existing webContents will be navigated automatically
     // }
