@@ -1,4 +1,5 @@
-const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer } = require('electron');
+require('v8-compile-cache');
+const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer } = require('electron');
 const electron = require('electron');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
 const { initUpdater } = require('./updater');
@@ -165,6 +166,15 @@ console.error(__dirname);
 ipcMain.on('setBadge', (event, count) => {
     app.badgeCount = (count >= 0) ? count : 0
 });
+
+ipcMain.on('get-sources', async (event) => {
+ //   const has_perms = systemPreferences.getMediaAccessStatus('screen');
+  // console.log('has_perms', has_perms);
+    const sources = (await desktopCapturer.getSources({ types: ['screen', 'window'] }))
+      .map(({ name, id, thumbnail }) => ({ name, id, thumbnail: thumbnail.toDataURL() }));
+    event.reply('get-sources-reply', sources);
+  });
+
 ipcMain.on('online-status-changed', (event, status) => {
     console.log('on -----');
     // console.log(status);
