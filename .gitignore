@@ -11,3 +11,4 @@ app/*
 config.js
 
 .history
+.DS_Store
