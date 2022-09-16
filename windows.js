@@ -161,7 +161,7 @@ exports.createWindow =  function(i18n, dev = true) {
     return {win: win, splash: splash}
 };
 
-function openNewWindow(subURL, event, options, dev){
+function openNewWindow(subURL, event, options, dev, openBeforeReady=false){
     let finalPath = urlM.format({
         pathname: path.join(__dirname, '/dist/index.html'),
         protocol: 'file:',
