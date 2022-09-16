@@ -66,7 +66,7 @@ exports.createWindow =  function(i18n, dev = true) {
 
             console.log(subURL)
 
-            const new_win = openNewWindow(subURL, event, options, dev);
+            const new_win = openNewWindow(subURL, event, options, dev, true);
             remoteMain.enable(new_win.webContents);
             new_win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
                if (url.includes('connectivity-test')){
