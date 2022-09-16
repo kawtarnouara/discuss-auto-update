@@ -1,5 +1,5 @@
 const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer } = require('electron');
-
+require('v8-compile-cache');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
@@ -79,7 +79,32 @@ app.on('ready', async () => {
     remoteMain.enable(win.webContents);
     win.webContents.on('did-finish-load', () => {
         if (mainurl) {
-            win.webContents.send('redirect-to-url', mainurl);
+            event.preventDefault();
+            let options = {
+                 title: "Piman Discuss",
+                 modal: false,
+                 // parent: win,
+                 width: 1300,
+                 height: 800,
+                 minWidth: 500,
+                 minHeight: 500,
+                 webContents: "", // use existing webContents if provided
+                 show: false
+             }
+             let new_win = new BrowserWindow(options)
+             remoteMain.enable(new_win.webContents);
+             new_win.once('ready-to-show', () => {
+                // new_win.webContents.send('redirect-to-url', mainurl);
+                 new_win.show()
+                 if (dev) {
+                     new_win.webContents.openDevTools();
+                 }
+             })
+             // if (!options.webContents) {
+             new_win.loadURL(mainurl) // existing webContents will be navigated automatically
+             // }
+             event.newGuest = new_win
+          //  win.webContents.send('redirect-to-url', mainurl);
             mainurl = null;
         }
     });
@@ -125,6 +150,14 @@ console.error(__dirname);
 ipcMain.on('setBadge', (event, count) => {
     app.badgeCount = (count >= 0) ? count : 0
 });
+ipcMain.on('get-sources', async (event) => {
+    //   const has_perms = systemPreferences.getMediaAccessStatus('screen');
+     // console.log('has_perms', has_perms);
+       const sources = (await desktopCapturer.getSources({ types: ['screen', 'window'] }))
+         .map(({ name, id, thumbnail }) => ({ name, id, thumbnail: thumbnail.toDataURL() }));
+       event.reply('get-sources-reply', sources);
+});
+
 ipcMain.on('online-status-changed', (event, status) => {
     console.log('on -----');
     // console.log(status);

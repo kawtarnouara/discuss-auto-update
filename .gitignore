@@ -8,4 +8,5 @@ dist/*
 build/dist/*
 app/*
 
+.history
 config.js

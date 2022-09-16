@@ -66,7 +66,7 @@ exports.createWindow =  function(i18n, dev = true) {
 
             console.log(subURL)
 
-            const new_win = openNewWindow(subURL, event, options, dev);
+            const new_win = openNewWindow(subURL, event, options, dev, true);
             remoteMain.enable(new_win.webContents);
             new_win.webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
                 if (url.includes('connectivity-test')){
@@ -107,6 +107,11 @@ exports.createWindow =  function(i18n, dev = true) {
             new_win.loadURL(url) // existing webContents will be navigated automatically
             // }
             event.newGuest = new_win
+        } else if (url.includes('/pdf/')){
+            event.preventDefault();
+            let subUrl = url.substr(url.indexOf("/pdf/"));
+            const new_win = openNewWindow(subUrl, event, options, dev, true);
+            remoteMain.enable(new_win.webContents);
         } else {
             event.preventDefault();
             shell.openExternal(url);
@@ -189,6 +194,9 @@ function openNewWindow(subURL, event, options, dev){
 
     let new_win = new BrowserWindow(options)
     remoteMain.enable(new_win.webContents);
+    if(openBeforeReady){
+        new_win.show()
+    }
     new_win.once('ready-to-show', () => {
         new_win.show()
         if (dev) {
