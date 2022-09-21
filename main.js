@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer } = require('electron');
+const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer } = require('electron');
 require('v8-compile-cache');
 const electron = require('electron');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');

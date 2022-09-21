@@ -9,3 +9,6 @@ build/dist/*
 app/*
 
 config.js
+
+.history
+.DS_Store
