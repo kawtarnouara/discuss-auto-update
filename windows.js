@@ -77,7 +77,7 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL, event, options, dev);
                }
             })
-        } else if(url.startsWith('https://office-piman.private-discuss.com')){
+        } else if(url.startsWith('https://document.private-discuss.com')){
             event.preventDefault();
             Object.assign(options, {
                 title: "Piman Discuss",
