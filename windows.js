@@ -97,8 +97,8 @@ exports.createWindow =  function(i18n, dev = true) {
 
             let new_win = new BrowserWindow(options)
             remoteMain.enable(new_win.webContents);
+            new_win.show();
             new_win.once('ready-to-show', () => {
-                new_win.show()
                 if (dev) {
                     new_win.webContents.openDevTools();
                 }
