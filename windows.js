@@ -85,7 +85,7 @@ exports.createWindow =  function(i18n, dev = true) {
             event.preventDefault();
             Object.assign(options, {
                 title: "Piman Discuss",
-                modal: false,
+                modal: false, 
                 // parent: win,
                 width: 1300,
                 height: 800,
@@ -345,6 +345,7 @@ function getMenuBeforeAuth(win, i18n) {
             {type: "separator"},
             {
                 label: i18n.t('quit'), accelerator: "Command+Q", click: function () {
+                    app.isQuiting = true;
                     app.quit();
                 }
             }

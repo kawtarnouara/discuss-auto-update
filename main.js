@@ -1,5 +1,5 @@
 require('v8-compile-cache');
-const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer } = require('electron');
+const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer, nativeImage, Tray} = require('electron');
 const electron = require('electron');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
 const { initUpdater } = require('./updater');
@@ -39,11 +39,28 @@ if (process.platform === 'win32'){
     });
 }
 
-app.on('before-quit', () => {
-    BrowserWindow.getAllWindows().map(window => {
-        window.destroy();
-    });
+app.on('before-quit', (ev) => {
+  //  console.log('before-quit');
+   // forceClose = true;
+    // BrowserWindow.getAllWindows().map(window => {
+    //     console.log('before-quit', window);
+    //     window.destroy();
+    // });
+   // ev.preventDefault();
 });
+app.on('quit', (ev) => {
+    console.log('quit');
+    app.isQuiting  = false;
+});
+
+//app.on('will-quit', (ev) => {
+   // console.log('will-quit');
+  // BrowserWindow.getAllWindows().map(window => {
+  //     console.log('before-quit', window);
+  //     window.destroy();
+  // });
+ // ev.preventDefault();
+//});
 
 app.on('open-url', function (ev, url) {
     ev.preventDefault();
@@ -60,7 +77,38 @@ app.on('open-url', function (ev, url) {
     }
 });
 
+// let tray = null
+// function createTray () {
+//   const icon = `file://${__dirname}/icons/piman_k9o_icon.icns` // required.
+//   const trayicon = nativeImage.createFromPath(icon)
+//   tray = new Tray(trayicon.resize({ width: 16 }))
+//   const contextMenu = Menu.buildFromTemplate([
+//     {
+//       label: 'Show App',
+//       click: () => {
+//         if(win){
+//             win.show();
+//         }else{
+//             createMainWindow(dev)
+//         }
+//       }
+//     },
+//     {
+//       label: 'Quit',
+//       click: () => {
+//         app.isQuiting = true
+//         app.quit();
+//       }
+//     },
+//   ])
+
+//   tray.setContextMenu(contextMenu)
+// }
 app.on('ready', async () => {
+    app.isQuiting  = false;
+    // if (!tray) { // if tray hasn't been created already.
+    //     createTray();
+    // }
     electron.powerMonitor.on('lock-screen', () => {
         if(win){
             win.webContents.send('screen-lock-change', 'lock');
@@ -128,17 +176,25 @@ app.on('ready', async () => {
             mainurl = null;
         }
     });
+    win.on('close', event => {
+        console.log('close',);
+        if(app.isQuiting){
+            return;
+        }
+        event.preventDefault();
+        win.hide();
+    })
 
 });
 
 
-
-
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', function (ev) {
+   // console.log('window-all-closed');
+   // ev.preventDefault();
     // On macOS specific close process
-    if (process.platform !== 'darwin') {
-        app.quit();
+   if (process.platform !== 'darwin') {
+       app.quit();
     }
 });
 
@@ -150,6 +206,8 @@ app.on('activate', async () => {
     // ]);
     if (win === null) {
         win = await createMainWindow(dev)
+    }else{
+        win.show();
     }
 });
 
@@ -185,7 +243,7 @@ ipcMain.on('online-status-changed', (event, status) => {
     win.loadURL(`file://${__dirname}/dist/index.html`);
     // win.loadURL(`https://piman.private-discuss.com`);
     win.once('ready-to-show',  () => {
-        splash.destroy();
+    splash.destroy();
     win.show();
     currentStatus = null;
     // const isAllowedMicrophone = await systemPreferences.askForMediaAccess('microphone');
