@@ -77,7 +77,7 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL, event, options, dev);
                }
             })
-        } else if(url.startsWith('https://office-piman.private-discuss.com')){
+        } else if(url.startsWith('https://document.private-discuss.com')){
             event.preventDefault();
             Object.assign(options, {
                 title: "Piman Discuss",
@@ -93,8 +93,9 @@ exports.createWindow =  function(i18n, dev = true) {
 
             let new_win = new BrowserWindow(options)
             remoteMain.enable(new_win.webContents);
+            new_win.show()
             new_win.once('ready-to-show', () => {
-                new_win.show()
+               // new_win.show()
                 if (dev) {
                     new_win.webContents.openDevTools();
                 }
