@@ -45,7 +45,6 @@ exports.initUpdater = (mainWindow) => {
         }
     });
     autoUpdater.on('update-not-available', () => {
-
         if (showNoUpdatesDialog){
             dialog.showMessageBox({
                 title: 'Piman Discuss',
@@ -235,7 +234,6 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         response.on('end', () => {
             const parsed = JSON.parse(finalResponse);
             backendData = parsed.result.data;
-            console.log(`BODY: ${backendData}`)
         })
         response.on('error', (error) => {
             console.log('error :' + JSON.stringify(error))

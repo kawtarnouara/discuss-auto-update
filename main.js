@@ -39,14 +39,10 @@ if (process.platform === 'win32'){
     });
 }
 
-app.on('before-quit', (ev) => {
-  //  console.log('before-quit');
-   // forceClose = true;
-    // BrowserWindow.getAllWindows().map(window => {
-    //     console.log('before-quit', window);
-    //     window.destroy();
-    // });
-   // ev.preventDefault();
+app.on('before-quit', () => {
+    BrowserWindow.getAllWindows().map(window => {
+        window.destroy();
+    });
 });
 
 //app.on('will-quit', (ev) => {
@@ -101,9 +97,6 @@ app.on('open-url', function (ev, url) {
 //   tray.setContextMenu(contextMenu)
 // }
 app.on('ready', async () => {
-    // if (!tray) { // if tray hasn't been created already.
-    //     createTray();
-    // }
     electron.powerMonitor.on('lock-screen', () => {
         if(win){
             win.webContents.send('screen-lock-change', 'lock');
@@ -193,8 +186,6 @@ app.on('activate', async () => {
     // ]);
     if (win === null) {
         win = await createMainWindow(dev)
-    }else{
-        win.show();
     }
 });
 
