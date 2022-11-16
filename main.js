@@ -1,4 +1,4 @@
-require('v8-compile-cache');
+//require('v8-compile-cache');
 const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer, nativeImage, Tray} = require('electron');
 const electron = require('electron');
 const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
@@ -47,10 +47,6 @@ app.on('before-quit', (ev) => {
     //     window.destroy();
     // });
    // ev.preventDefault();
-});
-app.on('quit', (ev) => {
-    console.log('quit');
-    app.isQuiting  = false;
 });
 
 //app.on('will-quit', (ev) => {
@@ -105,7 +101,6 @@ app.on('open-url', function (ev, url) {
 //   tray.setContextMenu(contextMenu)
 // }
 app.on('ready', async () => {
-    app.isQuiting  = false;
     // if (!tray) { // if tray hasn't been created already.
     //     createTray();
     // }
@@ -176,14 +171,6 @@ app.on('ready', async () => {
             mainurl = null;
         }
     });
-    win.on('close', event => {
-        console.log('close',);
-        if(app.isQuiting){
-            return;
-        }
-        event.preventDefault();
-        win.hide();
-    })
 
 });
 
