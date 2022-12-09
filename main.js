@@ -27,8 +27,8 @@ if (process.platform === 'win32'){
 
 // The primary instance of the application will run this code, not the new  instance
     app.on('second-instance', (event, args) => {
-        if (args.slice(1) && args.slice(1)[2]){
-        mainurl = args.slice(1)[2]
+        if (args.slice(1) && args.slice(1)[1]){
+        mainurl = args.slice(1)[1]
         if(win){
             win.webContents.send('open-window', mainurl);
             mainurl = null;
@@ -57,7 +57,6 @@ app.on('open-url', function (ev, url) {
 });
 
 app.on('ready', async () => {
-    app.isQuiting  = false;
     electron.powerMonitor.on('lock-screen', () => {
         if(win){
             win.webContents.send('screen-lock-change', 'lock');
@@ -126,25 +125,15 @@ app.on('ready', async () => {
             mainurl = null;
         }
     });
-    win.on('close', event => {
-        if(app.isQuiting){
-            return;
-        }
-        event.preventDefault();
-        win.hide();
-    })
 });
 
 
 app.on('before-quit', () => {
-   /* BrowserWindow.getAllWindows().map(window => {
+    BrowserWindow.getAllWindows().map(window => {
         window.destroy();
-    });*/
+    });
 });
 
-app.on('quit', (ev) => {
-    app.isQuiting  = false;
-});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -163,8 +152,6 @@ app.on('activate', async () => {
     if (win === null) {
         win = await createMainWindow(dev)
         new Badge(win, {});
-    }else{
-        win.show();
     }
 });
 
@@ -223,3 +210,4 @@ ipcMain.on('download-btn', (e, args) => {
 ipcMain.on("download", (event, info) => {
     console.log("ipcMain download triggerd");
 });
+

@@ -1,7 +1,7 @@
 {
   "name": "discuss",
   "description": "Piman Discuss, La solution de communication privee, dediee, sur mesure et chiffree",
-  "version": "6.0.1",
+  "version": "6.0.8",
   "main": "./main.js",
   "author": "PRIVATE DISCUSS",
   "scripts": {
@@ -54,7 +54,7 @@
       "verifyUpdateCodeSignature": "false",
       "icon": "./build/icon.ico",
       "target": "nsis",
-      "certificateSubjectName": "SECURED BY PIMAN SECURITY SAS",
+      "certificateSubjectName": "PIMAN SECURITY SAS",
       "signingHashAlgorithms": [
         "sha256"
       ],
