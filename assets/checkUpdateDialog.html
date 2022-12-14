@@ -70,7 +70,8 @@
         </div>
         <div class="button-container">
             <button class="cancel-btn" id="cancel-btn" onclick="cancelUpdate()">Plus tard</button>
-            <button class="update-btn" onclick="updateApp()">Mettre à jour</button>
+            <button class="update-btn" id="auto-update" onclick="updateApp()">Mettre à jour</button>
+            <button class="update-btn" id="manual-update" onclick="downloadApp()">télécharger l'application</button>
         </div>
     </div>
 
@@ -89,10 +90,17 @@
         return result;
     }
     const force_update = findGetParameter('force_update');
-
+    const type = document.getElementById('type');
     if (force_update.toString() === '1'){
         const cancel = document.getElementById('cancel-btn');
         cancel.style.display = 'none';
+    }
+    const autoUpdateBtn = document.getElementById('auto-update');
+    const manualUpdateBtn = document.getElementById('manual-update');
+    if(findGetParameter('type') === 'manual'){
+        autoUpdateBtn.style.display = 'none';
+    }else{
+        manualUpdateBtn.style.display = 'none';
     }
 
     const new_version = document.getElementById('new-version');
@@ -118,6 +126,9 @@
         ipcRenderer.send('update_app');
     }
 
+    function downloadApp(){
+        ipcRenderer.send('download_app', {url: 'https://github.com/kawtarnouara/discuss-auto-update/releases/download/v6.0.5/Piman-Discuss-6.0.5.dmg'});
+    }
 </script>
 </body>
 </html>
