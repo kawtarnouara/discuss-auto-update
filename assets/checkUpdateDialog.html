@@ -127,7 +127,9 @@
     }
 
     function downloadApp(){
-        ipcRenderer.send('download_app', {url: 'https://github.com/kawtarnouara/discuss-auto-update/releases/download/v6.0.5/Piman-Discuss-6.0.5.dmg'});
+        if(findGetParameter('link')){
+            ipcRenderer.send('download_app', {url: findGetParameter('link')});
+        }
     }
 </script>
 </body>
