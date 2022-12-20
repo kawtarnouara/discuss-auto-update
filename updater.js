@@ -27,6 +27,8 @@ exports.initUpdater = (mainWindow) => {
         if (backendData && backendData.version.toString() === info.version.toString()){
             const data = backendData;
             const version = data.version;
+            const type = data.type || 'auto';
+            const link = data.download_link || null;
             const description = data.description;
             let force_update = data.force_update;
             const oldVersion = app.getVersion();
@@ -36,6 +38,8 @@ exports.initUpdater = (mainWindow) => {
             dialogCheckUpdate = checkupdateDialog('', {
                 version: version,
                 old_version: oldVersion,
+                type,
+                link,
                 details: description ? description : '',
                 force_update: force_update,
             });
@@ -150,6 +154,14 @@ exports.initUpdater = (mainWindow) => {
                     }
                 }
             });
+        }
+    });
+
+    ipcMain.on('download_app', (event, info) => {
+        dialogCheckUpdate.destroy();
+        dialogCheckUpdate = null;
+        if(info.url){
+            mainWindow.webContents.downloadURL(info.url);
         }
     });
 
