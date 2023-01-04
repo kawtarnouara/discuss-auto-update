@@ -18,7 +18,7 @@ remoteMain.initialize();
 // Create window on electron intialization
 if (process.platform === 'win32'){
     app.setAsDefaultProtocolClient('piman-discuss');
-    app.setAppUserModelId('Piman Discuss')
+    app.setAppUserModelId('Piman Discuss');
     const primaryInstance = app.requestSingleInstanceLock();
     if (!primaryInstance) {
         app.quit();
