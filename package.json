@@ -65,7 +65,7 @@
       "buildResources": "build"
     },
     "productName": "Piman Discuss",
-    "afterSign": "/Users/anasschbani/Desktop/projects/discuss-auto-update/notarize.js",
+    "afterSign": "/Users/kawtarnouara/Documents/apps/discuss-electron-update/electron/notarize.js",
     "protocols": [
       {
         "name": "Piman discuss",
@@ -85,7 +85,7 @@
     "hardenedRuntime": true,
     "gatekeeperAssess": false,
     "entitlements": "build/entitlements.mac.plist",
-    "afterSign": "/Users/anasschbani/Desktop/projects/discuss-auto-update/notarize.js",
+    "afterSign": "/Users/kawtarnouara/Documents/apps/discuss-electron-update/electron/notarize.js",
     "entitlementsInherit": "build/entitlements.mac.inherit.plist"
   },
   "mas": {
