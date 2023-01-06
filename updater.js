@@ -79,12 +79,12 @@ exports.initUpdater = (mainWindow) => {
     });
     autoUpdater.on('download-progress', (progressObj) => {
         if (progressBar != null) {
-            progressBar.value = progressObj.percent;
-            let MbytesPerSecond = parseFloat((progressObj.bytesPerSecond / 1000000).toFixed(2));
-            let log_message = "Vitesse de téléchargement: " + MbytesPerSecond + "MB/s  \n";
-            let transferredMBytes = parseFloat((progressObj.transferred / 1000000).toFixed(2));
-            let totalMBytes = parseFloat((progressObj.total / 1000000).toFixed(2));
-            progressBar.detail = log_message + `Téléchargé ${transferredMBytes} MB sur ${totalMBytes} MB ...`;
+             progressBar.value = progressObj.percent;
+             let MbytesPerSecond = parseFloat((progressObj.bytesPerSecond / 1000000).toFixed(2));
+             let log_message = "Vitesse de téléchargement: " + MbytesPerSecond + "MB/s  \n";
+             let transferredMBytes = parseFloat((progressObj.transferred / 1000000).toFixed(2));
+             let totalMBytes = parseFloat((progressObj.total / 1000000).toFixed(2));
+             progressBar.detail = log_message + `Téléchargé ${transferredMBytes} MB sur ${totalMBytes} MB ...`;
         }
         // sendStatusToWindow(log_message);
     });
@@ -154,6 +154,17 @@ exports.initUpdater = (mainWindow) => {
                     }
                 }
             });
+            progressBar
+                .on('completed', function() {
+                    console.info(`completed...`);
+                  //  progressBar.detail = 'Task completed. Exiting...';
+                })
+                .on('aborted', function(value) {
+                    console.info(`aborted... ${value}`);
+                })
+                .on('progress', function(value) {
+                  //  progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`;
+                });
         }
     });
 
