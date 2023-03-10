@@ -25,24 +25,7 @@ exports.initUpdater = (mainWindow) => {
         autoUpdateVersion = info.version;
         // mainWindow.webContents.send('update_available');
         if (backendData && backendData.version.toString() === info.version.toString()){
-            const data = backendData;
-            const version = data.version;
-            const type = data.type || 'auto';
-            const link = data.download_link || null;
-            const description = data.description;
-            let force_update = data.force_update;
-            const oldVersion = app.getVersion();
-            const min_functionning_version = data.min_functionning_version;
-            const isFunctionning = versionCompare(oldVersion, min_functionning_version);
-            force_update = isFunctionning === -1 ? 1 : force_update;
-            dialogCheckUpdate = checkupdateDialog('', {
-                version: version,
-                old_version: oldVersion,
-                type,
-                link,
-                details: description ? description : '',
-                force_update: force_update,
-            });
+            openUpdateModal();
         } else  if (showNoUpdatesDialog){
             dialog.showMessageBox({
                 icon: dialogImage,
@@ -70,12 +53,18 @@ exports.initUpdater = (mainWindow) => {
         if (progressBar){
             progressBar.close();
         }
-        updateDialog('Mise à jour - Piman Discuss', {
-            title: 'Mise à jour échouée',
-            details: "Impossible de terminer la mises à jour de votre application ! ",
-            withButtons: 0,
-            success : 0
-        });
+        if (backendData && backendData.type === 'auto') {
+            backendData.type = 'manual';
+            openUpdateModal();
+        } else {
+            updateDialog('Mise à jour - Piman Discuss', {
+                title: 'Mise à jour échouée',
+                details: "Impossible de terminer la mises à jour de votre application ! , " + JSON.stringify(err) ,
+                withButtons: 0,
+                success : 0
+            });
+        }
+
     });
     autoUpdater.on('download-progress', (progressObj) => {
         if (progressBar != null) {
@@ -175,8 +164,33 @@ exports.initUpdater = (mainWindow) => {
             mainWindow.webContents.downloadURL(info.url);
         }
     });
-
 };
+
+
+
+function openUpdateModal() {
+    if (!backendData) {
+        return;
+    }
+    const data = backendData;
+    const version = data.version;
+    const type = data.type || 'auto';
+    const link = data.download_link || null;
+    const description = data.description;
+    let force_update = data.force_update;
+    const oldVersion = app.getVersion();
+    const min_functionning_version = data.min_functionning_version;
+    const isFunctionning = min_functionning_version ? versionCompare(oldVersion, min_functionning_version) : 1;
+    force_update = isFunctionning === -1 ? 1 : force_update;
+    dialogCheckUpdate = checkupdateDialog('', {
+        version: version,
+        old_version: oldVersion,
+        type,
+        link,
+        details: description ? description : '',
+        force_update: force_update,
+    });
+}
 
 function sendStatusToWindow(text) {
     console.log(text);
