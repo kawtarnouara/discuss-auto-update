@@ -1,7 +1,7 @@
 {
   "name": "discuss",
   "description": "Piman Discuss, La solution de communication privee, dediee, sur mesure et chiffree",
-  "version": "9.0.7",
+  "version": "7.0.5",
   "main": "./main.js",
   "author": "PRIVATE DISCUSS",
   "scripts": {
@@ -28,7 +28,7 @@
     "electron": "^20.1.4",
     "electron-builder": "^23.0.2",
     "electron-installer-dmg": "^3.0.0",
-    "electron-notarize": "^1.0.0",
+    "electron-notarize": "^1.2.2",
     "electron-packager": "^14.2.1",
     "electron-winstaller": "^4.0.2"
   },
