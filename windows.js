@@ -85,7 +85,7 @@ exports.createWindow =  function(i18n, dev = true) {
             })
             return {action: 'deny'};
         } else if(url.startsWith('https://document.private-discuss.com')){
-            Object.assign(options, {
+           const options ={
                 title: "Piman Discuss",
                 modal: false, 
                 // parent: win,
@@ -95,7 +95,7 @@ exports.createWindow =  function(i18n, dev = true) {
                 minHeight: 500,
                 webContents: '',
                 show: false
-            })
+            };
 
             let new_win = new BrowserWindow(options)
             remoteMain.enable(new_win.webContents);
