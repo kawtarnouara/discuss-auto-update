@@ -130,11 +130,11 @@ exports.downloadManager = function (win, i18n) {
                      dialogFile = new BrowserWindow({
                         title: "Téléchargement - Piman Discuss",
                         width: 500,
-                        height: 170,
+                        height: 200,
                         backgroundColor: '#eeeeee',
                         nodeIntegration: 'iframe',
                         resizable: false,
-                        webPreferences: {
+                         webPreferences: {
                             contextIsolation: false,
                             nodeIntegration: true
                         }
