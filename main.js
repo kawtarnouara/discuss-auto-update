@@ -212,6 +212,12 @@ ipcMain.on('setBadge', (event, count) => {
     app.badgeCount = (count >= 0) ? count : 0
 });
 
+ipcMain.on('notification-click', (event) => {
+    if(win) {
+        win.show();
+    }
+});
+
 ipcMain.on('get-sources', async (event) => {
  //   const has_perms = systemPreferences.getMediaAccessStatus('screen');
   // console.log('has_perms', has_perms);
