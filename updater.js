@@ -95,6 +95,7 @@ exports.initUpdater = (mainWindow) => {
             dialogUpdate = null;
         setImmediate(() => {
             app.removeAllListeners('window-all-closed');
+            app.isQuitting = true;
             autoUpdater.quitAndInstall();
 
         });

@@ -39,11 +39,13 @@ if (process.platform === 'win32'){
     });
 }
 
-app.on('before-quit', () => {
-    BrowserWindow.getAllWindows().map(window => {
+
+
+/*app.on('before-quit', () => {
+/!*    BrowserWindow.getAllWindows().map(window => {
         window.destroy();
-    });
-});
+    });*!/
+});*/
 
 //app.on('will-quit', (ev) => {
    // console.log('will-quit');
@@ -186,6 +188,13 @@ app.on('activate', async () => {
     // ]);
     if (win === null) {
         win = await createMainWindow(dev)
+    } else {
+        console.log('ONBEFOREUNLOAD ----- ' , win);
+        try{
+            win.show();
+        } catch(err) {
+            console.log(err)
+        }
     }
 });
 
