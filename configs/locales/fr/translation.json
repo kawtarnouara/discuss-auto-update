@@ -15,5 +15,6 @@
   "window": "Fenêtre",
   "reload": "Recharger",
   "warning": "Attention",
-   "downloading": "Un fichier est en cours de téléchargement. Voulez-vous vraiment arrêter le téléchargement et quitter ?"
+   "downloading": "Un fichier est en cours de téléchargement. Voulez-vous vraiment arrêter le téléchargement et quitter ?",
+ "show_app": "Afficher l'application"
 }

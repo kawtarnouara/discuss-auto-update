@@ -5,6 +5,7 @@ const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
 const remoteMain = require("@electron/remote/main");
+const TrayGenerator = require('./TrayGenerator');
 let dev = false;
 app.getLocale()
 let win;
@@ -166,7 +167,8 @@ app.on('ready', async () => {
             mainurl = null;
         }
     });
-
+    const Tray = new TrayGenerator(win, i18n);
+    Tray.createTray();
 });
 
 
