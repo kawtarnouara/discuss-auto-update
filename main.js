@@ -388,7 +388,7 @@ ipcMain.on('get-sources', async (event, types) => {
     //   const has_perms = systemPreferences.getMediaAccessStatus('screen');
     // console.log('has_perms', has_perms);
     const sources = (await desktopCapturer.getSources({types}))
-        .map(({name, id, thumbnail}) => ({name, id, thumbnail: thumbnail.toDataURL()}));
+        .map((object) => ({...object, thumbnail: object.thumbnail.toDataURL()}));
     event.reply('get-sources-reply', sources);
 });
 
