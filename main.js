@@ -190,19 +190,20 @@ if (process.platform === 'win32') {
 
 // The primary instance of the application will run this code, not the new  instance
     app.on('second-instance', (event, args) => {
-        if (args.slice(1) && args.slice(1)[2]) {
-            mainurl = args.slice(1)[2];
-            if (win) {
-                win.webContents.send('open-window', mainurl);
-                mainurl = null;
-                if (win.isMinimized()) {
-                    win.restore();
-                }
-                win.focus();
+        if (args.slice(1) && args.slice(1)[2]){
+        mainurl = args.slice(1)[2];
+        if(win){
+            win.webContents.send('open-window', mainurl);
+            mainurl = null;
+            if(win.isMinimized()){
+                win.restore();
             }
+            win.focus();
+        }
         }
     });
 }
+
 
 
 /*app.on('before-quit', () => {
@@ -212,23 +213,22 @@ if (process.platform === 'win32') {
 });*/
 
 //app.on('will-quit', (ev) => {
-// console.log('will-quit');
-// BrowserWindow.getAllWindows().map(window => {
-//     console.log('before-quit', window);
-//     window.destroy();
-// });
-// ev.preventDefault();
+   // console.log('will-quit');
+  // BrowserWindow.getAllWindows().map(window => {
+  //     console.log('before-quit', window);
+  //     window.destroy();
+  // });
+ // ev.preventDefault();
 //});
 
 app.on('open-url', function (ev, url) {
     ev.preventDefault();
-    mainev = ev;
-    mainurl = url;
-    if (app.isReady()) {
-        if (win) {
+    mainev = ev; mainurl = url;
+    if (app.isReady()){
+        if(win){
             win.webContents.send('open-window', mainurl);
             mainurl = null;
-            if (win.isMinimized()) {
+            if(win.isMinimized()){
                 win.restore();
             }
             win.focus();
@@ -265,13 +265,13 @@ app.on('open-url', function (ev, url) {
 // }
 app.on('ready', async () => {
     electron.powerMonitor.on('lock-screen', () => {
-        if (win) {
+        if(win){
             win.webContents.send('screen-lock-change', 'lock');
         }
     });
 
     electron.powerMonitor.on('unlock-screen', () => {
-        if (win) {
+        if(win){
             win.webContents.send('screen-lock-change', 'unlock');
         }
     });
@@ -283,7 +283,7 @@ app.on('ready', async () => {
     });
 
     i18n.on('languageChanged', (lng) => {
-        const lang = ['en', 'fr', 'es'].includes(lng) ? lng : 'fr';
+        const lang = ['en', 'fr', 'es'].includes(lng ) ? lng : 'fr';
         const templateFull = getMenuAfterAuth(win, i18n);
 
         const templateNotFull = getMenuBeforeAuth(win, i18n);
@@ -292,9 +292,9 @@ app.on('ready', async () => {
     });
     result = await createWindow(i18n, dev);
     // console.log('result ----------------' , result);
-    console.log('token ----------------', process.env.GH_TOKEN);
+     console.log('token ----------------' , process.env.GH_TOKEN);
     splash = result.splash;
-    if (process.platform === 'win32' && process.argv.slice(1) && process.argv.slice(1)[0]) {
+    if (process.platform === 'win32' &&  process.argv.slice(1) &&  process.argv.slice(1)[0]){
         mainurl = process.argv.slice(1)[0]
     }
     win = result.win;
@@ -302,7 +302,7 @@ app.on('ready', async () => {
     win.webContents.on('did-finish-load', (event) => {
         if (mainurl) {
             event.preventDefault();
-            let options = {
+           let options = {
                 title: "Piman Discuss",
                 modal: false,
                 // parent: win,
@@ -316,7 +316,7 @@ app.on('ready', async () => {
             let new_win = new BrowserWindow(options)
             remoteMain.enable(new_win.webContents);
             new_win.once('ready-to-show', () => {
-                // new_win.webContents.send('redirect-to-url', mainurl);
+               // new_win.webContents.send('redirect-to-url', mainurl);
                 new_win.show()
                 if (dev) {
                     new_win.webContents.openDevTools();
@@ -326,7 +326,7 @@ app.on('ready', async () => {
             new_win.loadURL(mainurl) // existing webContents will be navigated automatically
             // }
             event.newGuest = new_win
-            // win.webContents.send('redirect-to-url', mainurl);
+           // win.webContents.send('redirect-to-url', mainurl);
             //mainurl = args.slice(1)[2];
             mainurl = null;
         }
@@ -338,11 +338,11 @@ app.on('ready', async () => {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function (ev) {
-    // console.log('window-all-closed');
-    // ev.preventDefault();
+   // console.log('window-all-closed');
+   // ev.preventDefault();
     // On macOS specific close process
-    if (process.platform !== 'darwin') {
-        app.quit();
+   if (process.platform !== 'darwin') {
+       app.quit();
     }
 });
 
@@ -355,10 +355,10 @@ app.on('activate', async () => {
     if (win === null) {
         win = await createMainWindow(dev)
     } else {
-        console.log('ONBEFOREUNLOAD ----- ', win);
-        try {
+        console.log('ONBEFOREUNLOAD ----- ' , win);
+        try{
             win.show();
-        } catch (err) {
+        } catch(err) {
             console.log(err)
         }
     }
@@ -379,7 +379,7 @@ ipcMain.on('setBadge', (event, count) => {
 });
 
 ipcMain.on('notification-click', (event) => {
-    if (win) {
+    if(win) {
         win.show();
     }
 });
@@ -396,34 +396,34 @@ ipcMain.on('online-status-changed', (event, status) => {
     console.log('on -----');
     // console.log(status);
     if (status === 'online' && currentStatus !== 'online') {
-        currentStatus = 'online';
-        splash.loadURL(`file://${__dirname}/assets/splash.html?connection=1`);
-        console.info(`file://${__dirname}/dist/index.html`)
-        //  win.loadURL(`file://${__dirname}/dist/index.html`);
-        win.loadURL(`http://localhost:4200/`);
-        win.once('ready-to-show', () => {
-            splash.destroy();
-            win.show();
-            currentStatus = null;
-            // const isAllowedMicrophone = await systemPreferences.askForMediaAccess('microphone');
-            /*   // const isAllowedCamera = await systemPreferences.askForMediaAccess('camera');
-               console.log("MICROHPHONE ALLOWED ------" + isAllowedMicrophone);
-               console.log("Camera ALLOWED ------" + isAllowedCamera);*/
-            initUpdater(win);
-        });
-    } else if (status === 'offline' && currentStatus !== 'offline') {
-        currentStatus = 'offline';
-        splash.loadURL(`file://${__dirname}/assets/splash.html?connection=0`);
-    }
+    currentStatus = 'online';
+    splash.loadURL(`file://${__dirname}/assets/splash.html?connection=1`);
+    console.info(`file://${__dirname}/dist/index.html`)
+    win.loadURL(`file://${__dirname}/dist/index.html`);
+  //  win.loadURL(`http://localhost:4200/`);
+    win.once('ready-to-show',  () => {
+    splash.destroy();
+    win.show();
+    currentStatus = null;
+    // const isAllowedMicrophone = await systemPreferences.askForMediaAccess('microphone');
+ /*   // const isAllowedCamera = await systemPreferences.askForMediaAccess('camera');
+    console.log("MICROHPHONE ALLOWED ------" + isAllowedMicrophone);
+    console.log("Camera ALLOWED ------" + isAllowedCamera);*/
+    initUpdater(win);
+});
+} else if (status === 'offline' && currentStatus !== 'offline') {
+    currentStatus = 'offline';
+    splash.loadURL(`file://${__dirname}/assets/splash.html?connection=0`);
+}
 });
 
 ipcMain.on('download-btn', (e, args) => {
     console.log('---- on download-btn');
     download(BrowserWindow.getFocusedWindow(), args.url)
-        .then(dl => {
-            // console.log(dl.getSavePath());
-        })
-        .catch(console.error);
+.then(dl => {
+    // console.log(dl.getSavePath());
+})
+.catch(console.error);
 });
 
 ipcMain.on("download", (event, info) => {

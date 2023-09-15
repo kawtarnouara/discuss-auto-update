@@ -163,13 +163,12 @@ exports.createWindow =  function(i18n, dev = true) {
 };
 
 function openNewWindow(subURL, dev, openBeforeReady = false){
-/*    let finalPath = urlM.format({
+    let finalPath = urlM.format({
         pathname: path.join(__dirname, '/dist/index.html'),
         protocol: 'file:',
         slashes: true,
         hash: subURL
-    })*/
-    let finalPath = 'http://localhost:4200' + subURL;
+    })
 
     console.log(finalPath)
 
