@@ -150,7 +150,6 @@ const AsciiToNutJSMapping = {
     '.': Key.Period,
     '/': Key.Slash,
     ':': Key.Colon,
-    ';': Key.Semicolon,
     '<': Key.Less_than,
     '=': Key.Equal,
     '>': Key.Greater_than,
@@ -190,20 +189,19 @@ if (process.platform === 'win32') {
 
 // The primary instance of the application will run this code, not the new  instance
     app.on('second-instance', (event, args) => {
-        if (args.slice(1) && args.slice(1)[2]){
-        mainurl = args.slice(1)[2];
-        if(win){
-            win.webContents.send('open-window', mainurl);
-            mainurl = null;
-            if(win.isMinimized()){
-                win.restore();
+        if (args.slice(1) && args.slice(1)[2]) {
+            mainurl = args.slice(1)[2];
+            if (win) {
+                win.webContents.send('open-window', mainurl);
+                mainurl = null;
+                if (win.isMinimized()) {
+                    win.restore();
+                }
+                win.focus();
             }
-            win.focus();
-        }
         }
     });
 }
-
 
 
 /*app.on('before-quit', () => {
@@ -213,22 +211,23 @@ if (process.platform === 'win32') {
 });*/
 
 //app.on('will-quit', (ev) => {
-   // console.log('will-quit');
-  // BrowserWindow.getAllWindows().map(window => {
-  //     console.log('before-quit', window);
-  //     window.destroy();
-  // });
- // ev.preventDefault();
+// console.log('will-quit');
+// BrowserWindow.getAllWindows().map(window => {
+//     console.log('before-quit', window);
+//     window.destroy();
+// });
+// ev.preventDefault();
 //});
 
 app.on('open-url', function (ev, url) {
     ev.preventDefault();
-    mainev = ev; mainurl = url;
-    if (app.isReady()){
-        if(win){
+    mainev = ev;
+    mainurl = url;
+    if (app.isReady()) {
+        if (win) {
             win.webContents.send('open-window', mainurl);
             mainurl = null;
-            if(win.isMinimized()){
+            if (win.isMinimized()) {
                 win.restore();
             }
             win.focus();
@@ -265,13 +264,13 @@ app.on('open-url', function (ev, url) {
 // }
 app.on('ready', async () => {
     electron.powerMonitor.on('lock-screen', () => {
-        if(win){
+        if (win) {
             win.webContents.send('screen-lock-change', 'lock');
         }
     });
 
     electron.powerMonitor.on('unlock-screen', () => {
-        if(win){
+        if (win) {
             win.webContents.send('screen-lock-change', 'unlock');
         }
     });
@@ -283,7 +282,7 @@ app.on('ready', async () => {
     });
 
     i18n.on('languageChanged', (lng) => {
-        const lang = ['en', 'fr', 'es'].includes(lng ) ? lng : 'fr';
+        const lang = ['en', 'fr', 'es'].includes(lng) ? lng : 'fr';
         const templateFull = getMenuAfterAuth(win, i18n);
 
         const templateNotFull = getMenuBeforeAuth(win, i18n);
@@ -292,9 +291,9 @@ app.on('ready', async () => {
     });
     result = await createWindow(i18n, dev);
     // console.log('result ----------------' , result);
-     console.log('token ----------------' , process.env.GH_TOKEN);
+    console.log('token ----------------', process.env.GH_TOKEN);
     splash = result.splash;
-    if (process.platform === 'win32' &&  process.argv.slice(1) &&  process.argv.slice(1)[0]){
+    if (process.platform === 'win32' && process.argv.slice(1) && process.argv.slice(1)[0]) {
         mainurl = process.argv.slice(1)[0]
     }
     win = result.win;
@@ -302,7 +301,7 @@ app.on('ready', async () => {
     win.webContents.on('did-finish-load', (event) => {
         if (mainurl) {
             event.preventDefault();
-           let options = {
+            let options = {
                 title: "Piman Discuss",
                 modal: false,
                 // parent: win,
@@ -316,7 +315,7 @@ app.on('ready', async () => {
             let new_win = new BrowserWindow(options)
             remoteMain.enable(new_win.webContents);
             new_win.once('ready-to-show', () => {
-               // new_win.webContents.send('redirect-to-url', mainurl);
+                // new_win.webContents.send('redirect-to-url', mainurl);
                 new_win.show()
                 if (dev) {
                     new_win.webContents.openDevTools();
@@ -326,7 +325,7 @@ app.on('ready', async () => {
             new_win.loadURL(mainurl) // existing webContents will be navigated automatically
             // }
             event.newGuest = new_win
-           // win.webContents.send('redirect-to-url', mainurl);
+            // win.webContents.send('redirect-to-url', mainurl);
             //mainurl = args.slice(1)[2];
             mainurl = null;
         }
@@ -338,11 +337,11 @@ app.on('ready', async () => {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function (ev) {
-   // console.log('window-all-closed');
-   // ev.preventDefault();
+    // console.log('window-all-closed');
+    // ev.preventDefault();
     // On macOS specific close process
-   if (process.platform !== 'darwin') {
-       app.quit();
+    if (process.platform !== 'darwin') {
+        app.quit();
     }
 });
 
@@ -355,10 +354,10 @@ app.on('activate', async () => {
     if (win === null) {
         win = await createMainWindow(dev)
     } else {
-        console.log('ONBEFOREUNLOAD ----- ' , win);
-        try{
+        console.log('ONBEFOREUNLOAD ----- ', win);
+        try {
             win.show();
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
@@ -379,7 +378,7 @@ ipcMain.on('setBadge', (event, count) => {
 });
 
 ipcMain.on('notification-click', (event) => {
-    if(win) {
+    if (win) {
         win.show();
     }
 });
@@ -420,10 +419,10 @@ ipcMain.on('online-status-changed', (event, status) => {
 ipcMain.on('download-btn', (e, args) => {
     console.log('---- on download-btn');
     download(BrowserWindow.getFocusedWindow(), args.url)
-.then(dl => {
-    // console.log(dl.getSavePath());
-})
-.catch(console.error);
+        .then(dl => {
+            // console.log(dl.getSavePath());
+        })
+        .catch(console.error);
 });
 
 ipcMain.on("download", (event, info) => {
@@ -637,38 +636,31 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
 ipcMain.on("keyboardType", (event, keyboardData) => {
     (async () => {
         try {
-            console.log("keyboardData " , keyboardData);
-            if (keyboardData.shiftKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                 console.log("key shift" , key);
+            const stringKey = mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
+            const key = mapKeyEventToNutJS(keyboardData, false);
+            console.log("stringKey ", stringKey);
+            console.log("key ", key);
 
-                if (key) {
-                    await keyboard.pressKey(Key.RightShift, key);
-                    await keyboard.releaseKey(Key.RightShift, key);
-                }
+            if (stringKey) {
+                await keyboard.type(stringKey);
+            } else if (keyboardData.shiftKey) {
+                console.log("key shift", key);
+                await keyboard.pressKey(Key.RightShift, key);
+                await keyboard.releaseKey(Key.RightShift, key);
             } else if (keyboardData.ctrlKey || keyboardData.metaKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                console.log("key crl/meta" , key);
-                if (key) {
-                    await keyboard.pressKey(Key.RightControl, key);
-                    await keyboard.releaseKey(Key.RightControl, key);
-                }
+                console.log("key ctrl/meta", key);
+                await keyboard.pressKey(Key.RightControl, key);
+                await keyboard.releaseKey(Key.RightControl, key);
             } else if (keyboardData.altKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                console.log("key alt" , key);
-                if (key) {
-                    await keyboard.pressKey(Key.RightAlt, key);
-                    await keyboard.releaseKey(Key.RightAlt, key);
-                }
-            } else {
-                //) Type the key value
-                await keyboard.type(mapKeyEventToNutJS(keyboardData, true));
+                console.log("key alt", key);
+                await keyboard.pressKey(Key.RightAlt, key);
+                await keyboard.releaseKey(Key.RightAlt, key);
             }
         } catch (e) {
-            console.log('key error ', e)
+            console.log('key error', e)
         }
-
     })();
+
 });
 
 function mapKeyEventToNutJS(keyEvent, canBeString) {
