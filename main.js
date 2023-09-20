@@ -150,7 +150,6 @@ const AsciiToNutJSMapping = {
     '.': Key.Period,
     '/': Key.Slash,
     ':': Key.Colon,
-    ';': Key.Semicolon,
     '<': Key.Less_than,
     '=': Key.Equal,
     '>': Key.Greater_than,
@@ -637,38 +636,31 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
 ipcMain.on("keyboardType", (event, keyboardData) => {
     (async () => {
         try {
-            console.log("keyboardData " , keyboardData);
-            if (keyboardData.shiftKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                 console.log("key shift" , key);
+            const stringKey = mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
+            const key = mapKeyEventToNutJS(keyboardData, false);
+            console.log("stringKey ", stringKey);
+            console.log("key ", key);
 
-                if (key) {
-                    await keyboard.pressKey(Key.RightShift, key);
-                    await keyboard.releaseKey(Key.RightShift, key);
-                }
+            if (stringKey) {
+                await keyboard.type(stringKey);
+            } else if (keyboardData.shiftKey) {
+                console.log("key shift", key);
+                await keyboard.pressKey(Key.RightShift, key);
+                await keyboard.releaseKey(Key.RightShift, key);
             } else if (keyboardData.ctrlKey || keyboardData.metaKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                console.log("key crl/meta" , key);
-                if (key) {
-                    await keyboard.pressKey(Key.RightControl, key);
-                    await keyboard.releaseKey(Key.RightControl, key);
-                }
+                console.log("key ctrl/meta", key);
+                await keyboard.pressKey(Key.RightControl, key);
+                await keyboard.releaseKey(Key.RightControl, key);
             } else if (keyboardData.altKey) {
-                const key = mapKeyEventToNutJS(keyboardData, false);
-                console.log("key alt" , key);
-                if (key) {
-                    await keyboard.pressKey(Key.RightAlt, key);
-                    await keyboard.releaseKey(Key.RightAlt, key);
-                }
-            } else {
-                //) Type the key value
-                await keyboard.type(mapKeyEventToNutJS(keyboardData, true));
+                console.log("key alt", key);
+                await keyboard.pressKey(Key.RightAlt, key);
+                await keyboard.releaseKey(Key.RightAlt, key);
             }
         } catch (e) {
-            console.log('key error ', e)
+            console.log('key error', e)
         }
-
     })();
+
 });
 
 function mapKeyEventToNutJS(keyEvent, canBeString) {
