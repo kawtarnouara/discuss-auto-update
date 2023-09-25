@@ -35,9 +35,9 @@ const AsciiToNutJSMapping = {
     'Backspace': Key.Backspace,
     'Tab': Key.Tab,
     'Enter': Key.Enter,
-    'Shift': Key.Shift,
-    'Control': Key.Control,
-    'Alt': Key.Alt,
+    'Shift': Key.RightShift,
+    'Control': Key.RightControl,
+    'Alt': Key.RightAlt,
     'Pause': Key.Pause,
     'CapsLock': Key.CapsLock,
     'Escape': Key.Escape,
@@ -51,7 +51,7 @@ const AsciiToNutJSMapping = {
     'ArrowDown': Key.Down,
     'Insert': Key.Insert,
     'Delete': Key.Delete,
-    'Meta': Key.LeftCmd,
+    'Meta': Key.RightCmd,
     'ContextMenu': Key.Menu,
     'F1': Key.F1,
     'F2': Key.F2,
@@ -147,7 +147,6 @@ const AsciiToNutJSMapping = {
     '+': Key.Add,
     ',': Key.Comma,
     '-': Key.Minus,
-    '.': Key.Period,
     '/': Key.Slash,
     ':': Key.Colon,
     '<': Key.Less_than,
@@ -395,25 +394,25 @@ ipcMain.on('online-status-changed', (event, status) => {
     console.log('on -----');
     // console.log(status);
     if (status === 'online' && currentStatus !== 'online') {
-    currentStatus = 'online';
-    splash.loadURL(`file://${__dirname}/assets/splash.html?connection=1`);
-    console.info(`file://${__dirname}/dist/index.html`)
-    win.loadURL(`file://${__dirname}/dist/index.html`);
-  //  win.loadURL(`http://localhost:4200/`);
-    win.once('ready-to-show',  () => {
-    splash.destroy();
-    win.show();
-    currentStatus = null;
-    // const isAllowedMicrophone = await systemPreferences.askForMediaAccess('microphone');
- /*   // const isAllowedCamera = await systemPreferences.askForMediaAccess('camera');
-    console.log("MICROHPHONE ALLOWED ------" + isAllowedMicrophone);
-    console.log("Camera ALLOWED ------" + isAllowedCamera);*/
-    initUpdater(win);
-});
-} else if (status === 'offline' && currentStatus !== 'offline') {
-    currentStatus = 'offline';
-    splash.loadURL(`file://${__dirname}/assets/splash.html?connection=0`);
-}
+        currentStatus = 'online';
+        splash.loadURL(`file://${__dirname}/assets/splash.html?connection=1`);
+        console.info(`file://${__dirname}/dist/index.html`)
+        //  win.loadURL(`file://${__dirname}/dist/index.html`);
+        win.loadURL(`http://localhost:4200/`);
+        win.once('ready-to-show', () => {
+            splash.destroy();
+            win.show();
+            currentStatus = null;
+            // const isAllowedMicrophone = await systemPreferences.askForMediaAccess('microphone');
+            /*   // const isAllowedCamera = await systemPreferences.askForMediaAccess('camera');
+               console.log("MICROHPHONE ALLOWED ------" + isAllowedMicrophone);
+               console.log("Camera ALLOWED ------" + isAllowedCamera);*/
+            initUpdater(win);
+        });
+    } else if (status === 'offline' && currentStatus !== 'offline') {
+        currentStatus = 'offline';
+        splash.loadURL(`file://${__dirname}/assets/splash.html?connection=0`);
+    }
 });
 
 ipcMain.on('download-btn', (e, args) => {
@@ -636,7 +635,7 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
 ipcMain.on("keyboardType", (event, keyboardData) => {
     (async () => {
         try {
-            const stringKey = mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
+            const stringKey = keyboardData.key === keyboardData.key.toUpperCase() ? keyboardData.key : mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
             const key = mapKeyEventToNutJS(keyboardData, false);
             console.log("stringKey ", stringKey);
             console.log("key ", key);
