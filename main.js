@@ -23,7 +23,7 @@ const {
     straightTo,
     Button, keyboard, Key, Point
 } = require("@nut-tree/nut-js");
-let dev = true;
+let dev = false;
 app.getLocale()
 let win;
 let splash;
