@@ -1,7 +1,7 @@
 {
   "name": "discuss",
   "description": "Piman Discuss, La solution de communication privee, dediee, sur mesure et chiffree",
-  "version": "7.0.8",
+  "version": "7.0.7",
   "main": "./main.js",
   "author": "PRIVATE DISCUSS",
   "scripts": {
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@electron/remote": "^2.0.1",
+    "@nut-tree/nut-js": "^3.1.2",
     "electron-context-menu": "^0.9.1",
     "electron-dl": "^1.14.0",
     "electron-progressbar": "^1.2.0",
