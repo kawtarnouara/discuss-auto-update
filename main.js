@@ -13,7 +13,7 @@ const {
     straightTo,
     Button, keyboard, Key, Point
 } = require("@nut-tree/nut-js");
-let dev = false;
+let dev = true;
 app.getLocale()
 let win;
 let splash;
@@ -314,14 +314,13 @@ exports.getVersionName = () => app.getVersion();
 //   autoUpdater.checkForUpdates();
 // });
 
-ipcMain.on('get-sources', async (event) => {
+ipcMain.on('get-sources', async (event, types) => {
     //   const has_perms = systemPreferences.getMediaAccessStatus('screen');
-     // console.log('has_perms', has_perms);
-       const sources = (await desktopCapturer.getSources({ types: ['screen', 'window'] }))
-         .map(({ name, id, thumbnail }) => ({ name, id, thumbnail: thumbnail.toDataURL() }));
-       event.reply('get-sources-reply', sources);
+    // console.log('has_perms', has_perms);
+    const sources = (await desktopCapturer.getSources({types}))
+        .map((object) => ({...object, thumbnail: object.thumbnail.toDataURL()}));
+    event.reply('get-sources-reply', sources);
 });
-
 let currentStatus = null;
 console.error(__dirname);
 ipcMain.on('online-status-changed', (event, status) => {
