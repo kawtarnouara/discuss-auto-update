@@ -8,7 +8,7 @@ exports.downloadManager = function (win, i18n) {
     app.on('before-quit', (event) =>{
         app.isQuitting = true;
         if (isDownloading){
-            const choice = require('electron').dialog.showMessageBoxSync(this,
+            const choice = require('electron').dialog.showMessageBoxSync(win,
                 {
                     type: 'question',
                     buttons: [i18n.t('quit'), i18n.t('cancel')],
