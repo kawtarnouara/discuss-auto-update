@@ -5,7 +5,7 @@ const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
 const Badge = require('electron-windows-badge');
-
+const TrayGenerator = require('./TrayGenerator');
 const remoteMain = require("@electron/remote/main");
 const {
     mouse,
@@ -276,23 +276,27 @@ app.on('ready', async () => {
             mainurl = null;
         }
     });
+    const Tray = new TrayGenerator(win, i18n);
+    Tray.createTray();
 });
 
 
+/*
 app.on('before-quit', () => {
     BrowserWindow.getAllWindows().map(window => {
         window.destroy();
     });
 });
+*/
 
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+/*app.on('window-all-closed', function () {
     // On macOS specific close process
     if (process.platform !== 'darwin') {
         app.quit();
     }
-});
+});*/
 
 app.on('activate', async () => {
     // macOS specific close process
@@ -303,6 +307,12 @@ app.on('activate', async () => {
     if (win === null) {
         win = await createMainWindow(dev)
         new Badge(win, {});
+    } else {
+        try {
+            win.show();
+        } catch (err) {
+            console.log(err);
+        }
     }
 });
 
@@ -321,6 +331,13 @@ ipcMain.on('get-sources', async (event, types) => {
         .map((object) => ({...object, thumbnail: object.thumbnail.toDataURL()}));
     event.reply('get-sources-reply', sources);
 });
+
+ipcMain.on('notification-click', (event) => {
+    if(win) {
+        win.show();
+    }
+});
+
 let currentStatus = null;
 console.error(__dirname);
 ipcMain.on('online-status-changed', (event, status) => {
