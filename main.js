@@ -634,7 +634,7 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
 
 ipcMain.on("keyboardType", (event, keyboardDatas) => {
     (async () => {
-        keyboardDatas.forEach(keyboardData => {
+        keyboardDatas.forEach(async (keyboardData) => {
             try {
                 const stringKey = keyboardData.key === keyboardData.key.toUpperCase() ? keyboardData.key : mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
                 const key = mapKeyEventToNutJS(keyboardData, false);
