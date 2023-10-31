@@ -634,21 +634,17 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
 
 ipcMain.on("keyboardType", (event, keyboardDatas) => {
     (async () => {
-        keyboardDatas.forEach(keyboardData => {
+        for (const keyboardData of keyboardDatas) {
             try {
                 const stringKey = keyboardData.key === keyboardData.key.toUpperCase() ? keyboardData.key : mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
                 const key = mapKeyEventToNutJS(keyboardData, false);
                 console.log("stringKey ", stringKey);
-                console.log("key ", key);
-
                 if (stringKey) {
                     await keyboard.type(stringKey);
                 } else if (keyboardData.shiftKey) {
-                    console.log("key shift", key);
                     await keyboard.pressKey(Key.RightShift, key);
                     await keyboard.releaseKey(Key.RightShift, key);
                 } else if (keyboardData.ctrlKey || keyboardData.metaKey) {
-                    console.log("key ctrl/meta", key);
                     await keyboard.pressKey(Key.RightControl, key);
                     await keyboard.releaseKey(Key.RightControl, key);
                 } else if (keyboardData.altKey) {
@@ -659,7 +655,7 @@ ipcMain.on("keyboardType", (event, keyboardDatas) => {
             } catch (e) {
                 console.log('key error', e)
             }
-        })
+        }
     })();
 
 });
