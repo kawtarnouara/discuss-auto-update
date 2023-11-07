@@ -23,7 +23,7 @@ const {
     straightTo,
     Button, keyboard, Key, Point
 } = require("@nut-tree/nut-js");
-let dev = false;
+let dev = true;
 app.getLocale()
 let win;
 let splash;
@@ -519,6 +519,7 @@ ipcMain.on("mouseClick", (event, mouseData) => {
 ipcMain.on("mouseDoubleClick", (event, mouseData) => {
     const callback = (async () => {
         try {
+            await mouse.click(Button.LEFT);
             switch (mouseData.button) {
                 case 'LEFT':
                     await mouse.doubleClick(Button.LEFT);
