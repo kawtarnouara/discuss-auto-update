@@ -4,6 +4,7 @@ const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
 const remoteMain = require("@electron/remote/main");
+const { powerSaveBlocker } = require('electron');
 let dev = false;
 app.getLocale()
 let win;
@@ -11,6 +12,7 @@ let splash;
 let result;
 let mainurl;
 let mainev;
+let blockerId;
 remoteMain.initialize();
 // Create window on electron intialization
 if (process.platform === 'win32'){
@@ -194,4 +196,13 @@ ipcMain.on('download-btn', (e, args) => {
 
 ipcMain.on("download", (event, info) => {
     console.log("ipcMain download triggerd");
+});
+
+ipcMain.on("powerSaveBlocker", (event, method) => {
+    if (method === 'start') {
+        blockerId = powerSaveBlocker.start('prevent-display-sleep');
+    } else if (method === 'stop' && blockerId !== undefined) {
+        powerSaveBlocker.stop(blockerId);
+        blockerId = undefined;
+    }
 });

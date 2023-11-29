@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, session, shell } = require('electron');
+const {app, BrowserWindow, Menu, session, shell, powerSaveBlocker } = require('electron');
 const ProgressBar = require('electron-progressbar');
 const { downloadManager } = require('./download');
 let { showNoUpdatesDialog } = require('./updater');
@@ -9,7 +9,7 @@ const { dialog } = require('electron')
 const remoteMain = require("@electron/remote/main");
 let backendData;
 let translate;
-
+let blockerId;
 
 exports.createWindow =  function(i18n, dev = true) {
     translate = i18n;
@@ -83,6 +83,16 @@ exports.createWindow =  function(i18n, dev = true) {
                     return {action: 'deny'};
                }
             })
+            if (openRoom) {
+                blockerId = powerSaveBlocker.start('prevent-display-sleep');
+                new_win.on('closed',  () => {
+                    if (blockerId !== undefined) {
+                        powerSaveBlocker.stop(blockerId);
+                        blockerId = undefined;
+                    }
+                });
+            }
+
             return {action: 'deny'};
         } else if(url.startsWith('https://document.private-discuss.com')){
            const options ={
