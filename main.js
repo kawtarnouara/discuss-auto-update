@@ -400,8 +400,8 @@ ipcMain.on('online-status-changed', (event, status) => {
         currentStatus = 'online';
         splash.loadURL(`file://${__dirname}/assets/splash.html?connection=1`);
         console.info(`file://${__dirname}/dist/index.html`)
-          win.loadURL(`file://${__dirname}/dist/index.html`);
-        // win.loadURL(`http://localhost:4200/`);
+        //  win.loadURL(`file://${__dirname}/dist/index.html`);
+         win.loadURL(`http://localhost:4200/`);
         win.once('ready-to-show', () => {
             splash.destroy();
             win.show();
@@ -432,6 +432,7 @@ ipcMain.on("download", (event, info) => {
 });
 
 ipcMain.on("powerSaveBlocker", (event, method) => {
+    console.log('powersaveblocker ', method);
     if (method === 'start') {
         blockerId = powerSaveBlocker.start('prevent-display-sleep');
     } else if (method === 'stop' && blockerId !== undefined) {
