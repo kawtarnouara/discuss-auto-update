@@ -23,8 +23,11 @@ const {
     straightTo,
     Button, keyboard, Key, Point
 } = require("@nut-tree/nut-js");
+const { powerSaveBlocker } = require('electron');
+
 let dev = false;
 app.getLocale()
+let blockerId;
 let win;
 let splash;
 let result;
@@ -426,6 +429,15 @@ ipcMain.on('download-btn', (e, args) => {
 
 ipcMain.on("download", (event, info) => {
     console.log("ipcMain download triggerd");
+});
+
+ipcMain.on("powerSaveBlocker", (event, method) => {
+    if (method === 'start') {
+        blockerId = powerSaveBlocker.start('prevent-display-sleep');
+    } else if (method === 'stop' && blockerId !== undefined) {
+        powerSaveBlocker.stop(blockerId);
+        blockerId = undefined;
+    }
 });
 
 ipcMain.on("mouseMove", (event, mouseData) => {
