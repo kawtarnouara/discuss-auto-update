@@ -42,7 +42,7 @@ class TrayGenerator {
     }
 
     createTray = () => {
-        this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, './build/icon.ico')));
+        this.tray = new Tray(nativeImage.createFromPath(path.join(__dirname, './build/icon.png')));
         this.tray.setIgnoreDoubleClickEvents(true);
 
         this.tray.on('click', this.toggleWindow);
