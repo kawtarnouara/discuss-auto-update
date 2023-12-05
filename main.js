@@ -179,6 +179,9 @@ for (let i = 48; i <= 57; i++) {  // ASCII for 0-9
 }
 mouse.config.autoDelayMs = 0;
 remoteMain.initialize();
+app.setLoginItemSettings({
+    openAtLogin: true
+});
 // Create window on electron intialization
 if (process.platform === 'win32') {
     app.setAsDefaultProtocolClient('piman-discuss');
