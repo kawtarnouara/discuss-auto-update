@@ -81,6 +81,8 @@ exports.createWindow =  function(i18n, dev = true) {
                    const connectivity_win = openNewWindow(subURL,  dev);
                     return {action: 'deny'};
                }
+                shell.openExternal(url);
+                return {action: 'deny'};
             })
 
 
