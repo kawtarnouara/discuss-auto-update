@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, session, ipcMain, shell} = require('electron');
+const {app, BrowserWindow, Menu, session, ipcMain, shell, screen:electronScreen} = require('electron');
 const ProgressBar = require('electron-progressbar');
 const { downloadManager } = require('./download');
 const {getUpdateInfo } = require('./updater');
@@ -68,6 +68,33 @@ exports.createWindow =  function(i18n, dev = true) {
             console.log(subURL)
 
             const new_win = openNewWindow(subURL,  dev, true);
+            if (openRoom) {
+                const mainScreen = electronScreen.getPrimaryDisplay();
+                const { width, height } = mainScreen.workAreaSize;
+                new_win.on('blur', () => {
+                    const smallWindowWidth = 350;
+                    const smallWindowHeight = 350;
+                    new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
+                    const x = width - smallWindowWidth - 10;
+                    const y = height - smallWindowHeight;
+
+                    new_win.setSize(smallWindowWidth, smallWindowHeight);
+                    new_win.setPosition(x, y);
+                    new_win.setAlwaysOnTop(true);
+                    new_win.webContents.send('smaller-room', true);
+                });
+                const enlarge = () => {
+                    new_win.setMinimumSize(500, 500);
+                    new_win.setSize(1300, 800);
+                    new_win.setAlwaysOnTop(false);
+                    const x = Math.floor((width - 1300) / 2);
+                    const y = Math.floor((height - 800) / 2);
+                    new_win.setPosition(x, y);
+                };
+                new_win.on('focus', () => {
+                    enlarge();
+                });
+            }
             remoteMain.enable(new_win.webContents);
             new_win.webContents.setWindowOpenHandler((details) => {
                 const url = details.url;
