@@ -90,6 +90,7 @@ exports.createWindow =  function(i18n, dev = true) {
                     const x = Math.floor((width - 1300) / 2);
                     const y = Math.floor((height - 800) / 2);
                     new_win.setPosition(x, y);
+                    new_win.webContents.send('smaller-room', false);
                 };
                 new_win.on('focus', () => {
                     enlarge();
