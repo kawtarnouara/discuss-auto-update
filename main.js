@@ -653,6 +653,10 @@ ipcMain.on("keyboardType", (event, keyboardDatas) => {
     (async () => {
         for (const keyboardData of keyboardDatas) {
             try {
+                if(keyboardData.isSpecialKey) {
+                    handleSpecialKeys(keyboardData.key);
+                    return;
+                }
                 const stringKey = keyboardData.key === keyboardData.key.toUpperCase() ? keyboardData.key : mapKeyEventToNutJS(keyboardData, !/shift|meta|alt|cmd/.test(keyboardData.code.toLowerCase()));
                 const key = mapKeyEventToNutJS(keyboardData, false);
                 console.log("stringKey ", stringKey);
@@ -676,6 +680,19 @@ ipcMain.on("keyboardType", (event, keyboardDatas) => {
     })();
 
 });
+
+
+function handleSpecialKeys(key) {
+    const superKey = process.platform === "darwin" ? Key.LeftSuper : Key.LeftControl;
+
+    const copyShortcut = [superKey, Key[key.toUpperCase()]];
+
+    (async () => {
+        await keyboard.pressKey(...copyShortcut);
+        await keyboard.releaseKey(...copyShortcut);
+    })();
+}
+
 
 function mapKeyEventToNutJS(keyEvent, canBeString) {
     return AsciiToNutJSMapping[keyEvent.key] || (canBeString && keyEvent.key !== "Dead" ? keyEvent.key : null);
