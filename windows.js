@@ -92,11 +92,13 @@ exports.createWindow =  function(i18n, dev = true) {
                     new_win.webContents.send('smaller-room', true);
                 });
                 const enlarge = () => {
-                    new_win.setMinimumSize(500, 500);
-                    new_win.setSize(windowInfos.width, windowInfos.height);
-                    new_win.setAlwaysOnTop(false);
-                    new_win.setPosition(windowInfos.x, windowInfos.y);
-                    new_win.webContents.send('smaller-room', false);
+                    if (windowInfos) {
+                        new_win.setMinimumSize(500, 500);
+                        new_win.setSize(windowInfos.width, windowInfos.height);
+                        new_win.setAlwaysOnTop(false);
+                        new_win.setPosition(windowInfos.x, windowInfos.y);
+                        new_win.webContents.send('smaller-room', false);
+                    }
                 };
                 new_win.on('focus', () => {
                     enlarge();
