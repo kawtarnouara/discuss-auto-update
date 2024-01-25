@@ -6,8 +6,13 @@ const path = require('path');
 const urlM = require('url');
 const {autoUpdater} = require("electron-updater");
 const { dialog } = require('electron')
+const Sentry = require("@sentry/electron");
 
 const remoteMain = require("@electron/remote/main");
+function handleError(err) {
+    console.error(err);
+    Sentry.captureException(err);
+}
 exports.createWindow =  function(i18n, dev = true) {
     // Setup permission handler
     try{
@@ -15,7 +20,7 @@ exports.createWindow =  function(i18n, dev = true) {
             return true;
         });
     } catch(err){
-        console.log('SESSION ERROR ' , err)
+        handleError(err);
     }
 
     // session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -271,6 +276,7 @@ function downloadManager2(win) {
                 downloadFilePath = downloadFolder + downloadFileName;
             }
         } catch(err) {
+            handleError(err);
             downloadFilePath = downloadFolder + downloadFileName;
         }
         console.log('download path : ' + downloadPath + ' - file exists : ' + fs.existsSync(downloadFilePath));

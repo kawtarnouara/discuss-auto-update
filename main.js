@@ -24,6 +24,7 @@ const {
     Button, keyboard, Key, Point
 } = require("@nut-tree/nut-js");
 const { powerSaveBlocker } = require('electron');
+const Sentry = require('@sentry/electron');
 
 let dev = false;
 app.getLocale()
@@ -168,7 +169,7 @@ const AsciiToNutJSMapping = {
     '}': Key.Right_brace,
     '~': Key.Tilde
 };
-
+Sentry.init({ dsn: "https://793e9612838b4974b9ed19469fad2643@sentry.piman-digital.com/36" });
 // Alphabets and Numbers
 for (let i = 65; i <= 90; i++) {  // ASCII for A-Z
     AsciiToNutJSMapping[String.fromCharCode(i).toLowerCase()] = Key[String.fromCharCode(i)];
@@ -183,6 +184,9 @@ app.setLoginItemSettings({
     openAtLogin: true
 });
 // Create window on electron intialization
+process.on('uncaughtException', (error) => {
+    Sentry.captureException(error);
+});
 if (process.platform === 'win32') {
     app.setAsDefaultProtocolClient('piman-discuss');
 
@@ -337,6 +341,7 @@ app.on('ready', async () => {
     });
     const Tray = new TrayGenerator(win, i18n);
     Tray.createTray();
+
 });
 
 
@@ -363,7 +368,7 @@ app.on('activate', async () => {
         try {
             win.show();
         } catch (err) {
-            console.log(err)
+            handleError(err);
         }
     }
 });
@@ -427,7 +432,9 @@ ipcMain.on('download-btn', (e, args) => {
         .then(dl => {
             // console.log(dl.getSavePath());
         })
-        .catch(console.error);
+        .catch(err => {
+            handleError(err);
+        });
 });
 
 ipcMain.on("download", (event, info) => {
@@ -461,12 +468,11 @@ function moveMouse(mouseData, callback) {
                 }
             })
             .catch(error => {
-                // Handle errors here
-                console.error(error);
+                handleError(error);
             });
 
     } catch (e) {
-        console.log('mouse error ', e)
+        handleError(e);
     }
 }
 
@@ -485,7 +491,7 @@ function getMouseTarget(mouseData) {
             console.log("target " , target)
             resolve(target);
         } catch (e) {
-            console.log('mouse error ', e);
+            handleError(e);
             reject(e);
         }
     });
@@ -500,12 +506,11 @@ ipcMain.on("mouseDrag", (event, mouseData) => {
 
                 })
                 .catch(error => {
-                    // Handle errors here
-                    console.error(error);
+                    handleError(error);
                 });
 
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 });
 
@@ -525,7 +530,7 @@ ipcMain.on("mouseClick", (event, mouseData) => {
             }
             console.log('mouse click ', mouseData.button)
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     });
@@ -548,7 +553,7 @@ ipcMain.on("mouseDoubleClick", (event, mouseData) => {
                     break;
             }
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     });
@@ -575,7 +580,7 @@ ipcMain.on("mouseScroll", (event, mouseData) => {
                     break;
             }
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     });
@@ -597,7 +602,7 @@ ipcMain.on("mouseRelease", (event, mouseData) => {
                     break;
             }
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     });
@@ -620,7 +625,7 @@ ipcMain.on("mousePress", (event, mouseData) => {
                     break;
             }
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     });
@@ -632,7 +637,7 @@ ipcMain.on("keyboardPress", (event, keyboardData) => {
         try {
             await keyboard.pressKey(keyboardData.input);
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     })();
@@ -643,7 +648,7 @@ ipcMain.on("keyboardRelease", (event, keyboardData) => {
         try {
             await keyboard.releaseKey(keyboardData.input, Key.L);
         } catch (e) {
-            console.log('mouse error ', e)
+            handleError(e);
         }
 
     })();
@@ -674,12 +679,18 @@ ipcMain.on("keyboardType", (event, keyboardDatas) => {
                     await keyboard.releaseKey(Key.RightAlt, key);
                 }
             } catch (e) {
-                console.log('key error', e)
+                handleError(e);
             }
         }
     })();
 
 });
+
+
+function handleError(err) {
+    console.error(err);
+    Sentry.captureException(err);
+}
 
 
 function handleSpecialKeys(key) {

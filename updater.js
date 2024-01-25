@@ -3,6 +3,7 @@ const {autoUpdater} = require("electron-updater");
 const ProgressBar = require('electron-progressbar');
 const { BrowserWindow } = require('electron')
 const { dialog } = require('electron')
+const Sentry = require("@sentry/electron");
 var showNoUpdatesDialog = false;
 var dialogUpdate;
 var dialogCheckUpdate;
@@ -47,6 +48,9 @@ exports.initUpdater = (mainWindow) => {
         if (progressBar){
             progressBar.close();
         }
+        if (!backendData) {
+            throw new Error('Error : get releases from backend');
+        }
         if (backendData && backendData.type === 'auto') {
             backendData.type = 'manual';
             openUpdateModal();
@@ -58,6 +62,7 @@ exports.initUpdater = (mainWindow) => {
                 success : 0
             });
         }
+        handleError(err);
 
     });
     autoUpdater.on('download-progress', (progressObj) => {
@@ -153,6 +158,10 @@ exports.initUpdater = (mainWindow) => {
 };
 
 
+function handleError(err) {
+    console.error(err);
+    Sentry.captureException(err);
+}
 
 function openUpdateModal() {
     if (!backendData) {
@@ -255,7 +264,7 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
 
                 }
             } catch(e){
-
+                handleError(e);
             }
         });
         response.on('end', () => {
@@ -267,6 +276,7 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         });
     });
     request.on('error', (error) => {
+        handleError(error);
      console.log('error :' + JSON.stringify(error))
     });
     request.setHeader('Content-Type', 'application/json');
