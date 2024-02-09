@@ -270,6 +270,8 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         response.on('end', () => {
             const parsed = JSON.parse(finalResponse);
             backendData = parsed.result.data;
+            console.log(`backendData:${JSON.stringify(backendData)}`);
+
         })
         response.on('error', (error) => {
             console.log('error :' + JSON.stringify(error))
