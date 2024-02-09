@@ -1,25 +1,27 @@
-const {app, BrowserWindow, Menu, session, ipcMain, shell, screen:electronScreen} = require('electron');
+const {app, BrowserWindow, Menu, session, ipcMain, shell, screen: electronScreen} = require('electron');
 const ProgressBar = require('electron-progressbar');
-const { downloadManager } = require('./download');
-const {getUpdateInfo } = require('./updater');
+const {downloadManager} = require('./download');
+const {getUpdateInfo} = require('./updater');
 const path = require('path');
 const urlM = require('url');
 const {autoUpdater} = require("electron-updater");
-const { dialog } = require('electron')
+const {dialog} = require('electron')
 const Sentry = require("@sentry/electron");
 let windowInfos;
 const remoteMain = require("@electron/remote/main");
+
 function handleError(err) {
     console.error(err);
     Sentry.captureException(err);
 }
-exports.createWindow =  function(i18n, dev = true) {
+
+exports.createWindow = function (i18n, dev = true) {
     // Setup permission handler
-    try{
+    try {
         session.defaultSession.setPermissionCheckHandler((webContents, permission, requestingOrigin) => {
             return true;
         });
-    } catch(err){
+    } catch (err) {
         handleError(err);
     }
 
@@ -34,7 +36,7 @@ exports.createWindow =  function(i18n, dev = true) {
     // Create the browser window.
 
 
-    let  win = new BrowserWindow({
+    let win = new BrowserWindow({
         // width: 600,
         // height: 600,
         title: "Piman Discuss",
@@ -68,28 +70,40 @@ exports.createWindow =  function(i18n, dev = true) {
 
             console.log(url)
 
-            let subURL = openRoom && isPublicRoom? url.substr(url.indexOf("/public/")) : openRoom ? url.substr(url.indexOf("/room/")) : 'connectivity-test'
+            let subURL = openRoom && isPublicRoom ? url.substr(url.indexOf("/public/")) : openRoom ? url.substr(url.indexOf("/room/")) : 'connectivity-test'
 
             console.log(subURL)
 
-            const new_win = openNewWindow(subURL,  dev, true);
+            const new_win = openNewWindow(subURL, dev, true);
             if (openRoom) {
                 const mainScreen = electronScreen.getPrimaryDisplay();
-                const { width, height } = mainScreen.workAreaSize;
+                const {width, height} = mainScreen.workAreaSize;
                 new_win.on('blur', () => {
-                    const windowSize = new_win.getSize();
-                    const windowPosition = new_win.getPosition();
-                    windowInfos = {width: windowSize[0], height: windowSize[1], x: windowPosition[0], y: windowPosition[1]}
-                    const smallWindowWidth = 350;
-                    const smallWindowHeight = 350;
-                    new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
-                    const x = width - smallWindowWidth - 10;
-                    const y = height - smallWindowHeight;
+                    win.webContents
+                        .executeJavaScript('({...localStorage});', true)
+                        .then(localStorage => {
+                            if (localStorage.unfocusView !== 'disabled') {
+                                const windowSize = new_win.getSize();
+                                const windowPosition = new_win.getPosition();
+                                windowInfos = {
+                                    width: windowSize[0],
+                                    height: windowSize[1],
+                                    x: windowPosition[0],
+                                    y: windowPosition[1]
+                                }
+                                const smallWindowWidth = 350;
+                                const smallWindowHeight = 350;
+                                new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
+                                const x = width - smallWindowWidth - 10;
+                                const y = height - smallWindowHeight;
 
-                    new_win.setSize(smallWindowWidth, smallWindowHeight);
-                    new_win.setPosition(x, y);
-                    new_win.setAlwaysOnTop(true);
-                    new_win.webContents.send('smaller-room', true);
+                                new_win.setSize(smallWindowWidth, smallWindowHeight);
+                                new_win.setPosition(x, y);
+                                new_win.setAlwaysOnTop(true);
+                                new_win.webContents.send('smaller-room', true);
+                            }
+                        });
+
                 });
                 const enlarge = () => {
                     if (windowInfos) {
@@ -101,33 +115,39 @@ exports.createWindow =  function(i18n, dev = true) {
                     }
                 };
                 new_win.on('focus', () => {
-                    enlarge();
+                    win.webContents
+                        .executeJavaScript('({...localStorage});', true)
+                        .then(localStorage => {
+                            if (localStorage.unfocusView !== 'disabled') {
+                                enlarge();
+                            }
+                        });
                 });
             }
             remoteMain.enable(new_win.webContents);
             new_win.webContents.setWindowOpenHandler((details) => {
                 const url = details.url;
 
-                if (url.includes('connectivity-test')){
+                if (url.includes('connectivity-test')) {
 
-                   console.log(url)
+                    console.log(url)
 
-                   let subURL = 'connectivity-test';
+                    let subURL = 'connectivity-test';
 
-                   console.log(subURL)
+                    console.log(subURL)
 
-                   const connectivity_win = openNewWindow(subURL,  dev);
+                    const connectivity_win = openNewWindow(subURL, dev);
                     return {action: 'deny'};
-               }
+                }
                 shell.openExternal(url);
                 return {action: 'deny'};
             })
 
             return {action: 'deny'};
-        } else if(url.startsWith('https://document.private-discuss.com')){
-           const options ={
+        } else if (url.startsWith('https://document.private-discuss.com')) {
+            const options = {
                 title: "Piman Discuss",
-                modal: false, 
+                modal: false,
                 // parent: win,
                 width: 1300,
                 height: 800,
@@ -149,17 +169,16 @@ exports.createWindow =  function(i18n, dev = true) {
             new_win.loadURL(url) // existing webContents will be navigated automatically
             // }
             return {action: 'deny'};
-        } else if (url.includes('/pdf/')){
+        } else if (url.includes('/pdf/')) {
             let subUrl = url.substr(url.indexOf("/pdf/"));
             const new_win = openNewWindow(subUrl, dev, true);
             remoteMain.enable(new_win.webContents);
             return {action: 'deny'};
-        }
-        else {
+        } else {
             shell.openExternal(url);
             return {action: 'deny'};
         }
-      })
+    })
 
 
     if (dev) {
@@ -202,7 +221,7 @@ exports.createWindow =  function(i18n, dev = true) {
     return {win: win, splash: splash}
 };
 
-function openNewWindow(subURL, dev, openBeforeReady = false){
+function openNewWindow(subURL, dev, openBeforeReady = false) {
     let finalPath = urlM.format({
         pathname: path.join(__dirname, '/dist/index.html'),
         protocol: 'file:',
@@ -235,18 +254,18 @@ function openNewWindow(subURL, dev, openBeforeReady = false){
 
     let new_win = new BrowserWindow(options)
     remoteMain.enable(new_win.webContents);
-    if(openBeforeReady){
+    if (openBeforeReady) {
         new_win.show()
     }
     new_win.once('ready-to-show', () => {
-        if(!openBeforeReady){
+        if (!openBeforeReady) {
             new_win.show()
         }
         if (dev) {
             new_win.webContents.openDevTools();
         }
     })
-   
+
     // if (!options.webContents) {
     new_win.loadURL(finalPath) // existing webContents will be navigated automatically
     // }
@@ -254,7 +273,7 @@ function openNewWindow(subURL, dev, openBeforeReady = false){
 }
 
 function downloadManager2(win) {
-    win.webContents.session.on('will-download', function(event, downloadItem, webContents){
+    win.webContents.session.on('will-download', function (event, downloadItem, webContents) {
         "use strict";
         // console.log(app.getPath('downloads'), downloadItem.getURL(), downloadItem.getFilename(), downloadItem.getMimeType());
         // .replace : to trim all "/" characters from downloads path
@@ -278,7 +297,7 @@ function downloadManager2(win) {
             } else {
                 downloadFilePath = downloadFolder + downloadFileName;
             }
-        } catch(err) {
+        } catch (err) {
             handleError(err);
             downloadFilePath = downloadFolder + downloadFileName;
         }
@@ -295,14 +314,14 @@ function downloadManager2(win) {
             // console.log("download item event triggred with state : "+ state, event.sender.getContentDisposition());
             let receviedBytes = downloadItem.getReceivedBytes();
             let receviedMBytes = parseFloat((receviedBytes / 1000000).toFixed(2));
-            console.log("received bytes : "+ receviedBytes);
+            console.log("received bytes : " + receviedBytes);
             if (state === 'interrupted') {
                 // console.log('Download is interrupted');
                 setTimeout(function () {
                     // progressBar.close();
                 }, 5000);
             } else if (state === 'progressing') {
-                if (totalByte> 0 && receviedBytes > 0) {
+                if (totalByte > 0 && receviedBytes > 0) {
                     // Download progressing + started
                     // console.log("download is processing with size : "+receviedMBytes+" MB");
                     if (progressBar === null) {
@@ -337,7 +356,7 @@ function downloadManager2(win) {
             }
         });
 
-        downloadItem.once('done', function(event, state) {
+        downloadItem.once('done', function (event, state) {
             console.log("INSIDE DONE with state : " + state);
             if (state === 'completed') {
                 if (progressBar) {
@@ -377,7 +396,7 @@ function getMenuBeforeAuth(win, i18n) {
         submenu: [
             {label: i18n.t('about'), selector: "orderFrontStandardAboutPanel:"},
             {
-                label: i18n.t('update'),  click: function () {
+                label: i18n.t('update'), click: function () {
                     getUpdateInfo(true)
                     autoUpdater.checkForUpdatesAndNotify()
                 }
@@ -415,13 +434,13 @@ function getMenuBeforeAuth(win, i18n) {
     ];
 }
 
-function getMenuAfterAuth (win, i18n) {
+function getMenuAfterAuth(win, i18n) {
     return [{
         label: i18n.t('application'),
         submenu: [
             {label: i18n.t('about'), selector: "orderFrontStandardAboutPanel:"},
             {
-                label: i18n.t('update'),  click: function () {
+                label: i18n.t('update'), click: function () {
                     getUpdateInfo(true)
                     autoUpdater.checkForUpdatesAndNotify()
                 }
