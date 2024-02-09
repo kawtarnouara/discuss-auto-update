@@ -70,19 +70,31 @@ exports.createWindow =  function(i18n, dev = true) {
                 const mainScreen = electronScreen.getPrimaryDisplay();
                 const { width, height } = mainScreen.workAreaSize;
                 new_win.on('blur', () => {
-                    const windowSize = new_win.getSize();
-                    const windowPosition = new_win.getPosition();
-                    windowInfos = {width: windowSize[0], height: windowSize[1], x: windowPosition[0], y: windowPosition[1]}
-                    const smallWindowWidth = 350;
-                    const smallWindowHeight = 350;
-                    new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
-                    const x = width - smallWindowWidth - 10;
-                    const y = height - smallWindowHeight;
+                    win.webContents
+                        .executeJavaScript('({...localStorage});', true)
+                        .then(localStorage => {
+                            if (localStorage.unfocusView !== 'disabled') {
+                                const windowSize = new_win.getSize();
+                                const windowPosition = new_win.getPosition();
+                                windowInfos = {
+                                    width: windowSize[0],
+                                    height: windowSize[1],
+                                    x: windowPosition[0],
+                                    y: windowPosition[1]
+                                }
+                                const smallWindowWidth = 350;
+                                const smallWindowHeight = 350;
+                                new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
+                                const x = width - smallWindowWidth - 10;
+                                const y = height - smallWindowHeight;
 
-                    new_win.setSize(smallWindowWidth, smallWindowHeight);
-                    new_win.setPosition(x, y);
-                    new_win.setAlwaysOnTop(true);
-                    new_win.webContents.send('smaller-room', true);
+                                new_win.setSize(smallWindowWidth, smallWindowHeight);
+                                new_win.setPosition(x, y);
+                                new_win.setAlwaysOnTop(true);
+                                new_win.webContents.send('smaller-room', true);
+                            }
+                        });
+
                 });
                 const enlarge = () => {
                     if (windowInfos) {
@@ -94,7 +106,13 @@ exports.createWindow =  function(i18n, dev = true) {
                     }
                 };
                 new_win.on('focus', () => {
-                    enlarge();
+                    win.webContents
+                        .executeJavaScript('({...localStorage});', true)
+                        .then(localStorage => {
+                            if (localStorage.unfocusView !== 'disabled') {
+                                enlarge();
+                            }
+                        });
                 });
             }
             remoteMain.enable(new_win.webContents);
