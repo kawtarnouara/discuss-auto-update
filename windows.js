@@ -91,8 +91,8 @@ exports.createWindow = function (i18n, dev = true) {
                                     x: windowPosition[0],
                                     y: windowPosition[1]
                                 }
-                                const smallWindowWidth = 350;
-                                const smallWindowHeight = 550;
+                                const smallWindowWidth = 315;
+                                const smallWindowHeight = 495;
                                 new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
                                 const x = width - smallWindowWidth - 5;
                                 const y = height - smallWindowHeight - 5;
