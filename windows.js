@@ -68,7 +68,7 @@ exports.createWindow =  function(i18n, dev = true) {
             const new_win = openNewWindow(subURL, dev, true);
             if (openRoom) {
                 const mainScreen = electronScreen.getPrimaryDisplay();
-                const { width, height } = mainScreen.workAreaSize;
+                const {width, height} = mainScreen.bounds;
                 new_win.on('blur', () => {
                     win.webContents
                         .executeJavaScript('({...localStorage});', true)
@@ -82,11 +82,11 @@ exports.createWindow =  function(i18n, dev = true) {
                                     x: windowPosition[0],
                                     y: windowPosition[1]
                                 }
-                                const smallWindowWidth = 350;
-                                const smallWindowHeight = 350;
+                                const smallWindowWidth = 315;
+                                const smallWindowHeight = 495;
                                 new_win.setMinimumSize(smallWindowWidth, smallWindowHeight);
-                                const x = width - smallWindowWidth - 10;
-                                const y = height - smallWindowHeight;
+                                const x = width - smallWindowWidth - 5;
+                                const y = height - smallWindowHeight - 5;
 
                                 new_win.setSize(smallWindowWidth, smallWindowHeight);
                                 new_win.setPosition(x, y);
