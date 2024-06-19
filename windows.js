@@ -60,6 +60,33 @@ exports.createWindow = function (i18n, dev = true) {
         show: false,
     });
 
+
+    win.webContents.on('will-redirect', function (event, url) {
+        console.log("redirect EXTERNAL URL " , url);
+        if(url.includes('/auth/sso/success?ResponseCode')) {
+            event.preventDefault();
+            const urlParts = url.split('/');
+            const basePathIndex = urlParts.findIndex(part => part === 'v2.0');
+            const baseUrl = urlParts.slice(0, basePathIndex + 1).join('/') + '/';
+
+            // Extract the path after the base URL
+            let remainingPath = url.slice(baseUrl.length);
+
+            // Replace 'success' with 'callback'
+            remainingPath = '/' + remainingPath.replace('success', 'callback');
+            let finalPath = urlM.format({
+                pathname: path.join(__dirname, '/dist/index.html'),
+                protocol: 'file:',
+                slashes: true,
+                hash: remainingPath
+            })
+
+            console.log('remainingPath ' , remainingPath)
+            console.log('finalPath ' , finalPath);
+            win.loadURL(finalPath);
+        }
+    });
+
     win.webContents.setWindowOpenHandler((details) => {
         const url = details.url;
         const openRoom = /\/room\//.test(url);
