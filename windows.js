@@ -270,6 +270,9 @@ function openNewWindow(subURL, dev, openBeforeReady = false) {
         minHeight: 500,
         webContents: "", // use existing webContents if provided
         show: false,
+        minimizable: true,
+        maximizable: true,
+        resizable: true,
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true,

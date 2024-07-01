@@ -9,6 +9,7 @@ const {
     ipcRenderer,
     desktopCapturer,
     nativeImage,
+    net,
     Tray
 } = require('electron');
 const electron = require('electron');
@@ -26,7 +27,7 @@ const {
 const { powerSaveBlocker } = require('electron');
 const Sentry = require('@sentry/electron');
 
-let dev = false;
+let dev = true;
 app.getLocale()
 let blockerId;
 let win;
@@ -272,6 +273,9 @@ app.on('open-url', function (ev, url) {
 //   tray.setContextMenu(contextMenu)
 // }
 app.on('ready', async () => {
+    protocol.handle('piman-discuss', () => {
+        return net.fetch(`file://${__dirname}/dist/index.html`)
+    })
     electron.powerMonitor.on('lock-screen', () => {
         if (win) {
             win.webContents.send('screen-lock-change', 'lock');
