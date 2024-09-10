@@ -54,13 +54,6 @@ exports.initUpdater = (mainWindow) => {
         if (backendData && backendData.type === 'auto') {
             backendData.type = 'manual';
             openUpdateModal();
-        } else {
-            updateDialog('Mise à jour - Piman Discuss', {
-                title: 'Mise à jour échouée',
-                details: "Impossible de terminer la mises à jour de votre application ! , " + JSON.stringify(err)  + backendData,
-                withButtons: 0,
-                success : 0
-            });
         }
         handleError(err);
 
