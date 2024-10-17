@@ -1,0 +1,20 @@
+{
+  "application": "Aplicativo",
+  "about": "Sobre Piman Discuss",
+  "update": "Verifique se há atualizações",
+  "profile": "Meu perfil",
+  "settings": "Configurações",
+  "quit": "Desistir",
+  "edit": "Editar",
+  "cancel": "Cancelar",
+  "restore": "Restaurar",
+  "copy": "Cópia",
+  "cut": "Corte",
+  "paste": "Colar",
+  "selectAll": "Selecionar tudo",
+  "window": "Janela",
+  "reload": "Recarregar",
+  "warning": "aviso",
+  "downloading": "Um arquivo está sendo baixado. ",
+  "show_app": "Mostrar aplicativo"
+}

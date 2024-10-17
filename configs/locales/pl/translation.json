@@ -1,0 +1,20 @@
+{
+  "application": "Aplikacja",
+  "about": "O Pimanie Discuss",
+  "update": "Sprawdź aktualizacje",
+  "profile": "Mój profil",
+  "settings": "Ustawienia",
+  "quit": "Zrezygnować",
+  "edit": "Redagować",
+  "cancel": "Anulować",
+  "restore": "Przywrócić",
+  "copy": "Kopia",
+  "cut": "Cięcie",
+  "paste": "Pasta",
+  "selectAll": "Zaznacz wszystko",
+  "window": "Okno",
+  "reload": "Przeładować",
+  "warning": "ostrzeżenie",
+  "downloading": "Trwa pobieranie pliku. ",
+  "show_app": "Pokaż aplikację"
+}

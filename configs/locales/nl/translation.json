@@ -1,0 +1,20 @@
+{
+  "application": "Sollicitatie",
+  "about": "Over Piman Discuss",
+  "update": "Controleer op updates",
+  "profile": "Mijn profiel",
+  "settings": "Instellingen",
+  "quit": "Ontslag nemen",
+  "edit": "Bewerking",
+  "cancel": "Annuleren",
+  "restore": "Herstellen",
+  "copy": "Kopiëren",
+  "cut": "Snee",
+  "paste": "Plakken",
+  "selectAll": "Selecteer alles",
+  "window": "Raam",
+  "reload": "Herladen",
+  "warning": "waarschuwing",
+  "downloading": "Er wordt een bestand gedownload. ",
+  "show_app": "Toon app"
+}

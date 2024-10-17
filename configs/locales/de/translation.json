@@ -1,0 +1,20 @@
+{
+  "application": "Anwendung",
+  "about": "Über Piman Discuss",
+  "update": "Suchen Sie nach Updates",
+  "profile": "Mein Profil",
+  "settings": "Einstellungen",
+  "quit": "Aufhören",
+  "edit": "Bearbeiten",
+  "cancel": "Stornieren",
+  "restore": "Wiederherstellen",
+  "copy": "Kopie",
+  "cut": "Schneiden",
+  "paste": "Paste",
+  "selectAll": "Alles auswählen",
+  "window": "Fenster",
+  "reload": "Neu laden",
+  "warning": "Warnung",
+  "downloading": "Eine Datei wird heruntergeladen. ",
+  "show_app": "App anzeigen"
+}
