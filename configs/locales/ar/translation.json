@@ -1,0 +1,20 @@
+{
+  "application": "طلب",
+  "about": "حول Piman Discuss",
+  "update": "التحقق من وجود تحديثات",
+  "profile": "ملفي الشخصي",
+  "settings": "إعدادات",
+  "quit": "يترك",
+  "edit": "يحرر",
+  "cancel": "يلغي",
+  "restore": "يعيد",
+  "copy": "ينسخ",
+  "cut": "يقطع",
+  "paste": "لصق",
+  "selectAll": "حدد الكل",
+  "window": "نافذة",
+  "reload": "إعادة تحميل",
+  "warning": "تحذير",
+  "downloading": "يتم الآن تنزيل ملف. ",
+  "show_app": "عرض التطبيق"
+}
