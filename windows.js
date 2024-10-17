@@ -9,6 +9,7 @@ const {dialog} = require('electron')
 const Sentry = require("@sentry/electron");
 let windowInfos;
 const remoteMain = require("@electron/remote/main");
+const i18n = require("./configs/i18next.config");
 
 function handleError(err) {
     console.error(err);
@@ -462,6 +463,18 @@ function getMenuBeforeAuth(win, i18n) {
         ]
     }
     ];
+}
+
+function changeLang(i18n, lang) {
+    if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
+        i18n.changeLanguage('fr');
+        i18n.off('loaded');
+    }
+    const templateFull = getMenuAfterAuth(win, i18n);
+
+    const templateNotFull = getMenuBeforeAuth(win, i18n);
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
 }
 
 function getMenuAfterAuth(win, i18n) {
