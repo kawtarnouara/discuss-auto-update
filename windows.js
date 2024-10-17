@@ -467,12 +467,16 @@ function getMenuBeforeAuth(win, i18n) {
 
 exports.changeLang = function changeLang(i18n, lang, win) {
     try {
+
+        console.log('changing language ' , lang);
         let newLang = lang;
         if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
             newLang = 'fr';
             i18n.changeLanguage('fr');
             i18n.off('loaded');
         }
+        console.log('changing language appliedLang' , appliedLang);
+        console.log('changing language newLang' , newLang);
         if (appliedLang !== newLang) {
             const templateFull = getMenuAfterAuth(win, i18n);
 
