@@ -472,21 +472,23 @@ exports.changeLang = function changeLang(i18n, lang, win) {
         let newLang = lang;
         if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
             newLang = 'fr';
-            i18n.changeLanguage('fr');
-            i18n.off('loaded');
         }
-        console.log('changing language appliedLang' , appliedLang);
-        console.log('changing language newLang' , newLang);
         if (appliedLang !== newLang) {
-            const templateFull = getMenuAfterAuth(win, i18n);
-
-            const templateNotFull = getMenuBeforeAuth(win, i18n);
-            Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+            appliedLang = newLang;
+            applyLangChange(newLang, win);
         }
     } catch(err) {
         console.error('lang error ' , err);
     }
 
+}
+
+function applyLangChange(newLang, win) {
+    i18n.changeLanguage(newLang, (err, t) => {
+        const templateNotFull = getMenuBeforeAuth(win, i18n);
+        Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+    });
+    i18n.off('loaded');
 }
 
 function getMenuAfterAuth(win, i18n) {
