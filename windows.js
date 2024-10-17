@@ -465,16 +465,20 @@ function getMenuBeforeAuth(win, i18n) {
     ];
 }
 
-function changeLang(i18n, lang) {
-    if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
-        i18n.changeLanguage('fr');
-        i18n.off('loaded');
+exports.changeLang = function changeLang(i18n, lang, win) {
+    try {
+        if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
+            i18n.changeLanguage('fr');
+            i18n.off('loaded');
+        }
+        const templateFull = getMenuAfterAuth(win, i18n);
+
+        const templateNotFull = getMenuBeforeAuth(win, i18n);
+        Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+    } catch(err) {
+        console.error('lang error ' , err);
     }
-    const templateFull = getMenuAfterAuth(win, i18n);
 
-    const templateNotFull = getMenuBeforeAuth(win, i18n);
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
 }
 
 function getMenuAfterAuth(win, i18n) {

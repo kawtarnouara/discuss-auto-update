@@ -295,7 +295,7 @@ app.on('ready', async () => {
     });
 
     i18n.on('languageChanged', (lng) => {
-        changeLang(i18n, lng);
+        changeLang(i18n, lng, win);
     });
 
     result = await createWindow(i18n, dev);
@@ -394,7 +394,7 @@ ipcMain.on('notification-click', (event) => {
 });
 
 ipcMain.on('language-change', (event, lang) => {
-   changeLang(i18n, lang);
+   changeLang(i18n, lang, win);
 });
 
 ipcMain.on('get-sources', async (event, types) => {

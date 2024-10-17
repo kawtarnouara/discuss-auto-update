@@ -262,8 +262,6 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         protocol: 'https:',
     });
     request.on('response', (response) => {
-        console.log(`STATUS: ${response.statusCode} ${JSON.stringify(response)}`);
-        console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
 
         response.on('data', (chunk) => {
             try{
@@ -278,7 +276,6 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         response.on('end', () => {
             const parsed = JSON.parse(finalResponse);
             backendData = parsed.result.data;
-            console.log(`backendData:${JSON.stringify(backendData)}`);
             autoUpdater.checkForUpdatesAndNotify();
 
         })
