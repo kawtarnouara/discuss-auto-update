@@ -10,7 +10,7 @@ const Sentry = require("@sentry/electron");
 let windowInfos;
 const remoteMain = require("@electron/remote/main");
 const i18n = require("./configs/i18next.config");
-
+let appliedLang;
 function handleError(err) {
     console.error(err);
     Sentry.captureException(err);
@@ -467,14 +467,18 @@ function getMenuBeforeAuth(win, i18n) {
 
 exports.changeLang = function changeLang(i18n, lang, win) {
     try {
+        let newLang = lang;
         if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
+            newLang = 'fr';
             i18n.changeLanguage('fr');
             i18n.off('loaded');
         }
-        const templateFull = getMenuAfterAuth(win, i18n);
+        if (appliedLang !== newLang) {
+            const templateFull = getMenuAfterAuth(win, i18n);
 
-        const templateNotFull = getMenuBeforeAuth(win, i18n);
-        Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+            const templateNotFull = getMenuBeforeAuth(win, i18n);
+            Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+        }
     } catch(err) {
         console.error('lang error ' , err);
     }
