@@ -1,6 +1,6 @@
 const {app, BrowserWindow, ipcMain, systemPreferences, protocol, Menu, ipcRenderer, desktopCapturer } = require('electron');
 require('v8-compile-cache');
-const { createWindow, getMenuAfterAuth, getMenuBeforeAuth } = require('./windows');
+const { createWindow,  changeLang  } = require('./windows');
 const { initUpdater } = require('./updater');
 const i18n = require('./configs/i18next.config');
 const remoteMain = require("@electron/remote/main");
@@ -57,18 +57,14 @@ app.on('open-url', function (ev, url) {
 
 app.on('ready', async () => {
     i18n.on('loaded', (loaded) => {
-        const lang = app.getLocale().startsWith('en') ? 'en' : app.getLocale().startsWith('fr') ? 'fr' : app.getLocale().startsWith('es') ? 'es' : 'fr'
+        const lang = ['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(app.getLocale()) ? app.getLocale() : 'fr';
         i18n.changeLanguage(lang);
         i18n.off('loaded');
     });
 
     i18n.on('languageChanged', (lng) => {
-        const lang = ['en', 'fr', 'es'].includes(lng ) ? lng : 'fr';
-        const templateFull = getMenuAfterAuth(win, i18n);
+        changeLang(i18n, lng, win);
 
-        const templateNotFull = getMenuBeforeAuth(win, i18n);
-
-        Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
     });
     result = await createWindow(i18n, dev);
     // console.log('result ----------------' , result);
@@ -149,6 +145,10 @@ exports.getVersionName = () => app.getVersion();
 
 let currentStatus = null;
 console.error(__dirname);
+ipcMain.on('change-language', (event, lang) => {
+    changeLang(i18n, lang, win);
+});
+
 ipcMain.on('setBadge', (event, count) => {
     app.badgeCount = (count >= 0) ? count : 0
 });
