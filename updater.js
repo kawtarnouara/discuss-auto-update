@@ -9,8 +9,9 @@ var dialogUpdate;
 var dialogCheckUpdate;
 let backendData;
 let autoUpdateVersion;
-
-exports.initUpdater = (mainWindow) => {
+let mainWindow;
+exports.initUpdater = (window) => {
+    mainWindow = window;
     getUpdateInfo(false);
 //s    autoUpdater.requestHeaders = { "PRIVATE-TOKEN": "Yra7hy4NWZPvgsNFWWo_" };
     autoUpdater.autoDownload = false;
@@ -254,6 +255,9 @@ function checkupdateDialog  (dialogTitle, options)   {
 exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
     showNoUpdatesDialog = showNoUpdates;
     const { net } = require('electron')
+    mainWindow.webContents
+        .executeJavaScript('({...localStorage});', true)
+        .then(localStorage => {
     var body = JSON.stringify({ platform: 'desktop', os: 'macos'});
     let finalResponse = '';
     const request = net.request({
@@ -261,6 +265,11 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         url: 'https://api-piman.private-discuss.com/v1.0/release/get' ,
         protocol: 'https:',
     });
+    request.setHeader('Content-Type', 'application/json');
+    const jwtToken = localStorage['jwt_token'];
+    if (jwtToken) {
+        request.setHeader('Authorization', `Bearer ${jwtToken}`);
+    }
     request.on('response', (response) => {
 
         response.on('data', (chunk) => {
@@ -287,10 +296,10 @@ exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
         handleError(error);
      console.log('error :' + JSON.stringify(error))
     });
-    request.setHeader('Content-Type', 'application/json');
+
     request.write(body, 'utf-8');
     request.end();
-
+        });
 }
 
 function encodeQueryData(data) {
