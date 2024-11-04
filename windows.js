@@ -8,7 +8,9 @@ const {autoUpdater} = require("electron-updater");
 const { dialog, screen:electronScreen } = require('electron')
 const remoteMain = require("@electron/remote/main");
 const  openAboutWindow = require("about-window").default;
+const i18n = require("./configs/i18next.config");
 let windowInfos;
+let appliedLang;
 exports.createWindow =  function(i18n, dev = true) {
     // Setup permission handler
     session.defaultSession.setPermissionCheckHandler((webContents, permission) => {
