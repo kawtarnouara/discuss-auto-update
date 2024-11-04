@@ -549,5 +549,31 @@ function getMenuAfterAuth (win, i18n) {
     ];
 }
 
+exports.changeLang = function changeLang(i18n, lang, win) {
+    try {
+
+        console.log('changing language ' , lang);
+        let newLang = lang;
+        if (!['en', 'fr', 'es', 'ar', 'de', 'it', 'nl', 'pl', 'pt', 'sv'].includes(lang) ) {
+            newLang = 'fr';
+        }
+        if (appliedLang !== newLang) {
+            appliedLang = newLang;
+            applyLangChange(newLang, win);
+        }
+    } catch(err) {
+        console.error('lang error ' , err);
+    }
+
+}
+
+function applyLangChange(newLang, win) {
+    i18n.changeLanguage(newLang, (err, t) => {
+        const templateNotFull = getMenuBeforeAuth(win, i18n);
+        Menu.setApplicationMenu(Menu.buildFromTemplate(templateNotFull));
+    });
+    i18n.off('loaded');
+}
+
 exports.getMenuBeforeAuth = getMenuBeforeAuth;
 exports.getMenuAfterAuth = getMenuAfterAuth;

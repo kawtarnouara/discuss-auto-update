@@ -1,8 +1,8 @@
-const { app, ipcMain } = require('electron');
+const {app, ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
 const ProgressBar = require('electron-progressbar');
-const { BrowserWindow } = require('electron')
-const { dialog } = require('electron')
+const {BrowserWindow} = require('electron')
+const {dialog} = require('electron')
 var showNoUpdatesDialog = false;
 var dialogUpdate;
 var dialogCheckUpdate;
@@ -10,8 +10,9 @@ let backendData;
 let autoUpdateVersion;
 const nativeImage = require('electron').nativeImage;
 const dialogImage = nativeImage.createFromPath('./assets/Icon-120x120.png')
-
-exports.initUpdater = (mainWindow) => {
+let mainWindow;
+exports.initUpdater = (window) => {
+    mainWindow = window;
     getUpdateInfo(false);
 //s    autoUpdater.requestHeaders = { "PRIVATE-TOKEN": "Yra7hy4NWZPvgsNFWWo_" };
     autoUpdater.autoInstallOnAppQuit = false;
@@ -23,14 +24,15 @@ exports.initUpdater = (mainWindow) => {
     autoUpdater.on('update-available', (info) => {
         autoUpdateVersion = info.version;
         // mainWindow.webContents.send('update_available');
-        if (backendData){
-            if (versionCompare(app.getVersion(), backendData.version ) < 0) {
-                if(backendData.version.toString() === info.version.toString()) {
+        if (backendData) {
+            if (versionCompare(app.getVersion(), backendData.version) < 0) {
+                if (backendData.version.toString() === info.version.toString()) {
                     openUpdateModal();
                     return;
                 }
             }
-        }   if (showNoUpdatesDialog){
+        }
+        if (showNoUpdatesDialog) {
             dialog.showMessageBox({
                 title: 'Piman Discuss',
                 message: 'Piman Discuss est à jour.',
@@ -40,7 +42,7 @@ exports.initUpdater = (mainWindow) => {
     });
     autoUpdater.on('update-not-available', () => {
 
-        if (showNoUpdatesDialog){
+        if (showNoUpdatesDialog) {
             dialog.showMessageBox({
                 icon: dialogImage,
                 title: 'Piman Discuss',
@@ -53,18 +55,18 @@ exports.initUpdater = (mainWindow) => {
     autoUpdater.on('error', (err) => {
         // sendStatusToWindow('Error in auto-updater. ' + err);
         // mainWindow.webContents.send('update_error');
-        if (progressBar){
+        if (progressBar) {
             progressBar.close();
             updateDialog('Mise à jour - Piman Discuss', {
                 title: 'Mise à jour échouée',
                 details: "Veuillez réessayer plus tard.",
                 withButtons: 0,
-                success : 0
+                success: 0
             });
         }
         if (backendData && backendData.type === 'auto') {
-            if (versionCompare(app.getVersion(), backendData.version ) < 0) {
-                if(backendData.version.toString() === info.version.toString()) {
+            if (versionCompare(app.getVersion(), backendData.version) < 0) {
+                if (backendData.version.toString() === info.version.toString()) {
                     backendData.type = 'manual';
                     openUpdateModal();
                 }
@@ -74,12 +76,12 @@ exports.initUpdater = (mainWindow) => {
     });
     autoUpdater.on('download-progress', (progressObj) => {
         if (progressBar != null) {
-             progressBar.value = progressObj.percent;
-             let MbytesPerSecond = parseFloat((progressObj.bytesPerSecond / 1000000).toFixed(2));
-             let log_message = "Vitesse de téléchargement: " + MbytesPerSecond + "MB/s  \n";
-             let transferredMBytes = parseFloat((progressObj.transferred / 1000000).toFixed(2));
-             let totalMBytes = parseFloat((progressObj.total / 1000000).toFixed(2));
-             progressBar.detail = log_message + `Téléchargé ${transferredMBytes} MB sur ${totalMBytes} MB ...`;
+            progressBar.value = progressObj.percent;
+            let MbytesPerSecond = parseFloat((progressObj.bytesPerSecond / 1000000).toFixed(2));
+            let log_message = "Vitesse de téléchargement: " + MbytesPerSecond + "MB/s  \n";
+            let transferredMBytes = parseFloat((progressObj.transferred / 1000000).toFixed(2));
+            let totalMBytes = parseFloat((progressObj.total / 1000000).toFixed(2));
+            progressBar.detail = log_message + `Téléchargé ${transferredMBytes} MB sur ${totalMBytes} MB ...`;
         }
         // sendStatusToWindow(log_message);
     });
@@ -89,15 +91,15 @@ exports.initUpdater = (mainWindow) => {
         //     autoUpdater.quitAndInstall();
         // }, 5000)
         // mainWindow.webContents.send('update_downloaded');
-        if (progressBar){
+        if (progressBar) {
             progressBar.close();
         }
 
-         dialogUpdate = updateDialog('Mise à jour - Piman Discuss', {
+        dialogUpdate = updateDialog('Mise à jour - Piman Discuss', {
             title: 'Mise à jour terminée',
             details: "Votre application a été mise à jour. Vous devez redémarrer l'application maintenant",
             withButtons: 1,
-            success : 1
+            success: 1
         });
 
     });
@@ -150,15 +152,15 @@ exports.initUpdater = (mainWindow) => {
                 }
             });
             progressBar
-                .on('completed', function() {
+                .on('completed', function () {
                     console.info(`completed...`);
-                  //  progressBar.detail = 'Task completed. Exiting...';
+                    //  progressBar.detail = 'Task completed. Exiting...';
                 })
-                .on('aborted', function(value) {
+                .on('aborted', function (value) {
                     console.info(`aborted... ${value}`);
                 })
-                .on('progress', function(value) {
-                  //  progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`;
+                .on('progress', function (value) {
+                    //  progressBar.detail = `Value ${value} out of ${progressBar.getOptions().maxValue}...`;
                 });
         }
     });
@@ -166,12 +168,11 @@ exports.initUpdater = (mainWindow) => {
     ipcMain.on('download_app', (event, info) => {
         dialogCheckUpdate.destroy();
         dialogCheckUpdate = null;
-        if(info.url){
+        if (info.url) {
             mainWindow.webContents.downloadURL(info.url);
         }
     });
 };
-
 
 
 function openUpdateModal() {
@@ -230,7 +231,7 @@ function updateDialog(dialogTitle, options) {
     return dialogFile;
 }
 
-function checkupdateDialog  (dialogTitle, options)   {
+function checkupdateDialog(dialogTitle, options) {
     let dialogFile = new BrowserWindow({
         title: dialogTitle,
         width: 600,
@@ -254,47 +255,55 @@ function checkupdateDialog  (dialogTitle, options)   {
     return dialogFile;
 }
 
-exports.getUpdateInfo = getUpdateInfo = (showNoUpdates)  => {
+exports.getUpdateInfo = getUpdateInfo = (showNoUpdates) => {
     showNoUpdatesDialog = showNoUpdates;
-    const { net } = require('electron')
-    var body = JSON.stringify({ platform: 'desktop', os: 'windows'});
-    let finalResponse = '';
-    const request = net.request({
-        method: 'POST',
-        url: 'https://api-piman.private-discuss.com/v1.0/release/get' ,
-        protocol: 'https:',
-    });
-    request.on('response', (response) => {
-        console.log(`STATUS: ${response.statusCode} ${JSON.stringify(response)}`);
-        console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+    const {net} = require('electron');
+    mainWindow.webContents
+        .executeJavaScript('({...localStorage});', true)
+        .then(localStorage => {
 
-        response.on('data', (chunk) => {
-            try{
-                if (chunk){
-                    finalResponse += chunk.toString()
-
-                }
-            } catch(e){
-
+            var body = JSON.stringify({platform: 'desktop', os: 'windows'});
+            let finalResponse = '';
+            const request = net.request({
+                method: 'POST',
+                url: 'https://api-piman.private-discuss.com/v1.0/release/get',
+                protocol: 'https:',
+            });
+            request.setHeader('Content-Type', 'application/json');
+            const jwtToken = localStorage['jwt_token'];
+            if (jwtToken) {
+                request.setHeader('Authorization', `Bearer ${jwtToken}`);
             }
-        });
-        response.on('end', () => {
-            const parsed = JSON.parse(finalResponse);
-            backendData = parsed.result.data;
-            autoUpdater.checkForUpdatesAndNotify();
-            console.log(`BODY: ${backendData}`)
-        })
-        response.on('error', (error) => {
-            console.log('error :' + JSON.stringify(error))
-        });
-    });
-    request.on('error', (error) => {
-     console.log('error :' + JSON.stringify(error))
-    });
-    request.setHeader('Content-Type', 'application/json');
-    request.write(body, 'utf-8');
-    request.end();
+            request.on('response', (response) => {
+                console.log(`STATUS: ${response.statusCode} ${JSON.stringify(response)}`);
+                console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
 
+                response.on('data', (chunk) => {
+                    try {
+                        if (chunk) {
+                            finalResponse += chunk.toString()
+
+                        }
+                    } catch (e) {
+
+                    }
+                });
+                response.on('end', () => {
+                    const parsed = JSON.parse(finalResponse);
+                    backendData = parsed.result.data;
+                    autoUpdater.checkForUpdatesAndNotify();
+                    console.log(`BODY: ${backendData}`)
+                })
+                response.on('error', (error) => {
+                    console.log('error :' + JSON.stringify(error))
+                });
+            });
+            request.on('error', (error) => {
+                console.log('error :' + JSON.stringify(error))
+            });
+            request.write(body, 'utf-8');
+            request.end();
+        });
 }
 
 function encodeQueryData(data) {
@@ -320,8 +329,12 @@ function versionCompare(v1, v2, options = {zeroExtend: false, lexicographical: f
     }
 
     if (zeroExtend) {
-        while (v1parts.length < v2parts.length) { v1parts.push('0'); }
-        while (v2parts.length < v1parts.length) { v2parts.push('0'); }
+        while (v1parts.length < v2parts.length) {
+            v1parts.push('0');
+        }
+        while (v2parts.length < v1parts.length) {
+            v2parts.push('0');
+        }
     }
 
     if (!lexicographical) {
