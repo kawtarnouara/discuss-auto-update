@@ -51,6 +51,9 @@
         "AppImage"
       ]
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true},
     "win": {
       "verifyUpdateCodeSignature": "false",
       "icon": "./build/icon.ico",
