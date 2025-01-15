@@ -62,7 +62,7 @@
       "verifyUpdateCodeSignature": "false",
       "icon": "./build/icon.ico",
       "target": "nsis",
-      "certificateSubjectName": "PIMAN SECURITY SAS",
+      "certificateSubjectName": "SAS PRIVATE DISCUSS",
       "signingHashAlgorithms": [
         "sha256"
       ],
