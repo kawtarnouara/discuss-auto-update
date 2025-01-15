@@ -53,6 +53,10 @@
     },
     "nsis": {
       "oneClick": false,
+      "allowElevation": true,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
       "allowToChangeInstallationDirectory": true},
     "win": {
       "verifyUpdateCodeSignature": "false",
