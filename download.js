@@ -104,9 +104,9 @@ exports.downloadManager = function (win, i18n) {
 
                         progressBar = new ProgressBar({
                             indeterminate: false,
-                            title: 'Téléchargement - Piman Discuss',
-                            text: 'En téléchargement ...',
-                            detail: 'Préparation des données ...',
+                            title: i18n.t('downloading_modal') + ' - Piman Discuss',
+                            text: i18n.t('downloading_now'),
+                            detail: i18n.t('preparing_data'),
                             closeOnComplete: false,
                             browserWindow: {
                                 parent: null,
@@ -137,7 +137,7 @@ exports.downloadManager = function (win, i18n) {
                         progressBar.value = (receviedBytes / totalByte) * 100;
                     }
                     if (progressBar){
-                        progressBar.detail = `Téléchargé ${receviedMBytes} MB sur ${totalMByte} MB ...`;
+                        progressBar.detail = i18n.t('downloaded') +` ${receviedMBytes} MB `+ i18n.t('out_of') + totalMByte + 'MB ...';
                     }
                 }
             }
@@ -150,7 +150,7 @@ exports.downloadManager = function (win, i18n) {
                     let path = downloadItem.getSavePath();
                     progressBar.close();
                      dialogFile = new BrowserWindow({
-                        title: "Téléchargement - Piman Discuss",
+                        title: i18n.t('downloading_modal') + ' - Piman Discuss',
                         width: 500,
                         height: 170,
                         backgroundColor: '#eeeeee',
@@ -161,11 +161,17 @@ exports.downloadManager = function (win, i18n) {
                             nodeIntegration: true
                         }
                     });
-                    dialogFile.loadURL(`file://${__dirname}/assets/dialogFile.html?file=${path}`);
+                    let query = encodeQueryData({
+                        file: path,
+                   download_success:  i18n.t('download_success'),
+                   open_file:  i18n.t('open_file'),
+                   open_location:  i18n.t('open_location')
+                    });
+                    dialogFile.loadURL(`file://${__dirname}/assets/dialogFile.html?${query}`);
                 }
             } else {
                 if (progressBar) {
-                    progressBar.text = `Échec du téléchargement`;
+                    progressBar.text = i18n.t('download_failed') ;
                     setTimeout(function () {
                         progressBar.close();
                     }, 3000);
@@ -175,3 +181,11 @@ exports.downloadManager = function (win, i18n) {
         // session.defaultSession.clearStorageData([], function () {// console.log(' cleared all storages after download ');});
     });
 };
+
+
+function encodeQueryData(data) {
+    const ret = [];
+    for (let d in data)
+        ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+    return ret.join('&');
+}

@@ -27,7 +27,7 @@ const {
 const { powerSaveBlocker } = require('electron');
 const Sentry = require('@sentry/electron');
 
-let dev = false;
+let dev = true;
 app.getLocale()
 let blockerId;
 let win;
@@ -422,7 +422,7 @@ ipcMain.on('online-status-changed', (event, status) => {
             /*   // const isAllowedCamera = await systemPreferences.askForMediaAccess('camera');
                console.log("MICROHPHONE ALLOWED ------" + isAllowedMicrophone);
                console.log("Camera ALLOWED ------" + isAllowedCamera);*/
-            initUpdater(win);
+            initUpdater(win, i18n);
         });
     } else if (status === 'offline' && currentStatus !== 'offline') {
         currentStatus = 'offline';

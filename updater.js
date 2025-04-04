@@ -10,7 +10,9 @@ var dialogCheckUpdate;
 let backendData;
 let autoUpdateVersion;
 let mainWindow;
-exports.initUpdater = (window) => {
+let i18n;
+exports.initUpdater = (window, i18nParam) => {
+    i18n = i18nParam;
     mainWindow = window;
     getUpdateInfo(false);
 //s    autoUpdater.requestHeaders = { "PRIVATE-TOKEN": "Yra7hy4NWZPvgsNFWWo_" };
@@ -34,8 +36,8 @@ exports.initUpdater = (window) => {
         }   if (showNoUpdatesDialog){
             dialog.showMessageBox({
                 title: 'Piman Discuss',
-                message: 'Piman Discuss est à jour.',
-                detail: 'Version ' + app.getVersion()
+                message: 'Piman Discuss ' + i18n.t('is_uptodate'),
+                detail: i18n.t('version') + ' ' + app.getVersion()
             });
         }
     });
@@ -43,8 +45,8 @@ exports.initUpdater = (window) => {
         if (showNoUpdatesDialog){
             dialog.showMessageBox({
                 title: 'Piman Discuss',
-                message: 'Piman Discuss est à jour.',
-                detail: 'Version ' + app.getVersion()
+                message: 'Piman Discuss ' + i18n.t('is_uptodate'),
+                detail: i18n.t('version') + ' ' + app.getVersion()
             });
         }
     });
@@ -54,9 +56,9 @@ exports.initUpdater = (window) => {
         // mainWindow.webContents.send('update_error');
         if (progressBar){
             progressBar.close();
-            updateDialog('Mise à jour - Piman Discuss', {
-                title: 'Mise à jour échouée',
-                details: "Veuillez réessayer plus tard.",
+            updateDialog(i18n.t('update_') + ' - Piman Discuss', {
+                title: i18n.t('update_failed') ,
+                details: i18n.t('retry_later'),
                 withButtons: 0,
                 success : 0
             });
@@ -79,10 +81,10 @@ exports.initUpdater = (window) => {
         if (progressBar != null) {
             progressBar.value = progressObj.percent;
             let MbytesPerSecond = parseFloat((progressObj.bytesPerSecond / 1000000).toFixed(2));
-            let log_message = "Vitesse de téléchargement: " + MbytesPerSecond + "MB/s  \n";
+            let log_message = i18n.t('download_speed') + MbytesPerSecond + "MB/s  \n";
             let transferredMBytes = parseFloat((progressObj.transferred / 1000000).toFixed(2));
             let totalMBytes = parseFloat((progressObj.total / 1000000).toFixed(2));
-            progressBar.detail = log_message + `Téléchargé ${transferredMBytes} MB sur ${totalMBytes} MB ...`;
+            progressBar.detail = log_message + i18n.t('downloaded') +` ${transferredMBytes} MB ${i18n.t('out_of')} ${totalMBytes} MB ...`;
         }
         // sendStatusToWindow(log_message);
     });
@@ -96,9 +98,9 @@ exports.initUpdater = (window) => {
             progressBar.close();
         }
 
-         dialogUpdate = updateDialog('Mise à jour - Piman Discuss', {
-            title: 'Mise à jour terminée',
-            details: "Votre application a été mise à jour. Vous devez redémarrer l'application maintenant",
+         dialogUpdate = updateDialog(i18n.t('update_') +  ' - Piman Discuss', {
+            title: i18n.t('update_done'),
+            details: i18n.t('update_done_restart'),
             withButtons: 1,
             success : 1
         });
@@ -135,9 +137,9 @@ exports.initUpdater = (window) => {
         if (!progressBar) {
             progressBar = new ProgressBar({
                 indeterminate: false,
-                title: 'Mise à jour - Piman Discuss',
-                text: 'En téléchargement ...',
-                detail: 'Préparation de la nouvelle version ...',
+                title: i18n.t('update_') +  ' - Piman Discuss',
+                text: i18n.t('downloading_now'),
+                detail: i18n.t('preparing_new_version'),
                 closeOnComplete: false,
                 browserWindow: {
                     parent: null,
@@ -193,6 +195,12 @@ function openUpdateModal() {
         link,
         details: description ? description : '',
         force_update: force_update,
+        update_available: i18n.t('update_available'),
+        update_message: i18n.t('update_message'),
+        update_message_2: i18n.t('update_message_2'),
+        later: i18n.t('later'),
+        update_now: i18n.t('update_now'),
+        download_app: i18n.t('download_app')
     });
 }
 

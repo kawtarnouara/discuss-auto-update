@@ -54,12 +54,15 @@
 <body>
 <div style="padding: 10px 30px">
     <div>
-        <h2>Mise à jour disponible</h2>
+        <h2 id="title">Mise à jour disponible</h2>
     </div>
     <div>
         <div class="update-text">
-            <div>
-                La nouvelle version <span id="new-version"></span> est disponible. Vous avez la version <span id="old-version"></span>.
+            <div >
+                <span id="update-message">La nouvelle version</span>
+                <span id="new-version"></span>
+                <span id="update-message-2"> est disponible. Vous avez la version</span>
+                <span id="old-version"></span>.
             </div>
             <div class="update-info">
                 <div id="description">
@@ -77,6 +80,11 @@
 
 </div>
 <script>
+    const { ipcRenderer } = require('electron');
+
+
+    translatePage();
+
     function findGetParameter(parameterName) {
         let result = null,
             tmp = [];
@@ -89,35 +97,33 @@
             });
         return result;
     }
-    const force_update = findGetParameter('force_update');
-    const type = document.getElementById('type');
-    if (force_update.toString() === '1'){
-        const cancel = document.getElementById('cancel-btn');
-        cancel.style.display = 'none';
+
+    function translatePage() {
+        document.getElementById('title').innerText = findGetParameter('update_available');
+        document.getElementById('update-message').innerText = findGetParameter('update_message');
+        document.getElementById('update-message-2').innerText = findGetParameter('update_message_2');
+        document.getElementById('cancel-btn').innerText = findGetParameter('later');
+        document.getElementById('auto-update').innerText = findGetParameter('update_now');
+        document.getElementById('manual-update').innerText = findGetParameter('download_app');
+        const new_version = document.getElementById('new-version');
+        new_version.innerText = findGetParameter('version');
+        const old_version = document.getElementById('old-version');
+        old_version.innerText = findGetParameter('old_version');
+        const description_info = document.getElementById('description');
+        description_info.innerHTML = findGetParameter('details');
+        const force_update = findGetParameter('force_update');
+        if (force_update.toString() === '1'){
+            const cancel = document.getElementById('cancel-btn');
+            cancel.style.display = 'none';
+        }
+        const autoUpdateBtn = document.getElementById('auto-update');
+        const manualUpdateBtn = document.getElementById('manual-update');
+        if(findGetParameter('type') === 'manual'){
+            autoUpdateBtn.style.display = 'none';
+        }else{
+            manualUpdateBtn.style.display = 'none';
+        }
     }
-    const autoUpdateBtn = document.getElementById('auto-update');
-    const manualUpdateBtn = document.getElementById('manual-update');
-    if(findGetParameter('type') === 'manual'){
-        autoUpdateBtn.style.display = 'none';
-    }else{
-        manualUpdateBtn.style.display = 'none';
-    }
-
-    const new_version = document.getElementById('new-version');
-    new_version.innerText = findGetParameter('version');
-
-
-    const old_version = document.getElementById('old-version');
-    old_version.innerText = findGetParameter('old_version');
-
-
-    const description_info = document.getElementById('description');
-    description_info.innerHTML = findGetParameter('details');
-
-
-
-
-    const { ipcRenderer } = require('electron');
 
     function cancelUpdate() {
         ipcRenderer.send('cancel_update');

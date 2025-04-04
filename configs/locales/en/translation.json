@@ -16,5 +16,15 @@
   "reload": "Reload",
   "warning": "warning",
   "downloading": "A file is being downloaded. Are you sure you want to stop downloading and exit?",
-  "show_app": "Show app"
+  "show_app": "Show app",
+  "update_available": "Available update",
+  "update_message": "The new version ",
+  "update_message_2": " is available. You have the version ",
+  "later": "Later",
+  "update_now": "To update",
+  "download_app": "Download the application",
+  "download_success": "Successfully downloaded",
+  "open_file": "Open the file",
+  "open_location": "Open the file location",
+  "restart": "Restart"
 }
