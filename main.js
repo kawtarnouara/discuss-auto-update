@@ -27,7 +27,7 @@ const {
 const { powerSaveBlocker } = require('electron');
 const Sentry = require('@sentry/electron');
 
-let dev = true;
+let dev = false;
 app.getLocale()
 let blockerId;
 let win;
