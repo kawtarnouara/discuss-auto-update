@@ -58,7 +58,7 @@ exports.initUpdater = (window, i18nParam) => {
             progressBar.close();
             updateDialog(i18n.t('update_') + ' - Piman Discuss', {
                 title: i18n.t('update_failed') ,
-                details: i18n.t('retry_later'),
+                details: i18n.t('retry_later') + err.toString() + err.message,
                 withButtons: 0,
                 success : 0
             });
