@@ -64,26 +64,38 @@ exports.createWindow = function (i18n, dev = true) {
 
     win.webContents.on('will-redirect', function (event, url) {
         console.log("redirect EXTERNAL URL " , url);
-        if(url.includes('/auth/sso/success?ResponseCode')) {
+        if(redirectUrl.includes('/auth/sso/success?ResponseCode')) {
             event.preventDefault();
-            const urlParts = url.split('/');
-            const basePathIndex = urlParts.findIndex(part => part === 'v2.0');
-            const baseUrl = urlParts.slice(0, basePathIndex + 1).join('/') + '/';
+            const parsedUrl = new URL(redirectUrl);
+            const responseCode = parsedUrl.searchParams.get('ResponseCode');
+            const redirectParam = parsedUrl.searchParams.get('redirect_url') || 'https://piman.com/test';
+            let finalPath = '/';
 
-            // Extract the path after the base URL
-            let remainingPath = url.slice(baseUrl.length);
+            if (redirectParam) {
+                const redirectParsed = new URL(redirectParam);
+                finalPath = redirectParsed.pathname;
+            }
+            finalPath = '/auth/sso/callback';
+            const hashWithQuery = `${finalPath}?ResponseCode=${encodeURIComponent(responseCode)}&redirect_url=${encodeURIComponent(redirectParam)}`;
 
-            // Replace 'success' with 'callback'
-            remainingPath = '/' + remainingPath.replace('success', 'callback');
-            let finalPath = urlM.format({
+            const localUrl = urlM.format({
                 pathname: path.join(__dirname, '/dist/index.html'),
                 protocol: 'file:',
                 slashes: true,
-                hash: remainingPath
-            })
+                hash: hashWithQuery
+            });
+            win.loadURL(localUrl);
+        } else if (redirectUrl.includes('/auth') || /\/room\//.test(redirectUrl)) {
+            event.preventDefault();
+            const parsedUrl = new URL(redirectUrl);
+            const pathname = parsedUrl.pathname;
+            const finalPath = urlM.format({
+                pathname: path.join(__dirname, '/dist/index.html'),
+                protocol: 'file:',
+                slashes: true,
+                hash: pathname
+            });
 
-            console.log('remainingPath ' , remainingPath)
-            console.log('finalPath ' , finalPath);
             win.loadURL(finalPath);
         }
     });
@@ -96,7 +108,7 @@ exports.createWindow = function (i18n, dev = true) {
         if (openRoom || openConnectivity) {
             // open window as modal
 
-            console.log(url)
+            console.log('open url ' , url)
 
             let subURL = openRoom && isPublicRoom ? url.substr(url.indexOf("/public/")) : openRoom ? url.substr(url.indexOf("/room/")) : 'connectivity-test'
 
